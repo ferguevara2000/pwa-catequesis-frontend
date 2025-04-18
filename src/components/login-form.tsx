@@ -1,24 +1,66 @@
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+"use client";
+
+import { useState } from "react";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { login } from "@/services/auth"; // 👈 importar tu función
+import { useUser } from "@/context/UserContext";
+import { useRouter } from "next/navigation";
+
 
 export function LoginForm({ className, ...props }: React.ComponentProps<"div">) {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const {setUser} = useUser();
+  const router = useRouter();
+
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setError("");
+  
+    try {
+      const response = await login(username, password);
+      console.log("Login exitoso:", response);
+      localStorage.setItem("usuario", response.usuario);
+      localStorage.setItem("rol", response.rol);
+      setUser({ nombre: response.usuario, rol: response.rol });
+      router.push("/dashboard"); // 👈 Redirección al dashboard
+    } catch (err: any) {
+      console.error(err);
+      setError(err.message || "Error al iniciar sesión");
+    }
+  };
+
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card className="overflow-hidden">
         <CardContent className="grid p-0 md:grid-cols-2">
-          <form className="p-6 md:p-8">
+          <form className="p-6 md:p-8" onSubmit={handleSubmit}>
             <div className="flex flex-col gap-6">
               <div className="flex flex-col items-center text-center">
                 <h1 className="text-2xl font-bold">Bienvenido de nuevo</h1>
-                <p className="text-balance text-muted-foreground">Inicia sesión en tu cuenta de Catequesis</p>
+                <p className="text-balance text-muted-foreground">
+                  Inicia sesión en tu cuenta de Catequesis
+                </p>
               </div>
+
               <div className="grid gap-2">
                 <Label htmlFor="email">Usuario</Label>
-                <Input id="email" type="email" placeholder="ej. juanperez123" required />
+                <Input
+                  id="email"
+                  type="text"
+                  placeholder="ej. juanperez123"
+                  required
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                />
               </div>
+
               <div className="grid gap-2">
                 <div className="flex items-center">
                   <Label htmlFor="password">Contraseña</Label>
@@ -26,13 +68,21 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
                     ¿Olvidaste tu contraseña?
                   </a>
                 </div>
-                <Input id="password" type="password" required />
+                <Input
+                  id="password"
+                  type="password"
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
               </div>
+
+              {error && <p className="text-sm text-red-500">{error}</p>}
+
               <Button type="submit" className="w-full">
                 Ingresar
               </Button>
 
-              {/* Línea divisoria decorativa */}
               <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
                 <span className="relative z-10 bg-background px-2 text-muted-foreground">
                   Sistema de Catequesis Parroquial
@@ -40,7 +90,7 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
               </div>
 
               <div className="text-center text-sm">
-                ¿Tienes problemas para ingresar?{" "}<br />
+                ¿Tienes problemas para ingresar? <br />
                 <a href="#" className="underline underline-offset-4">
                   Contacta al administrador
                 </a>
@@ -60,5 +110,5 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
         Copyright© 2025.
       </div>
     </div>
-  )
+  );
 }
