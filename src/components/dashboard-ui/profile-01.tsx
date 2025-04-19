@@ -31,7 +31,7 @@ export default function Profile01({
   avatar = defaultProfile.avatar,
 }: Partial<Profile01Props> = defaultProfile) {
   const { user, setUser } = useUser();
-  const router = useRouter();
+  const router = useRouter()
   const API_URL = process.env.NEXT_PUBLIC_API_URL
 
   const handleLogout = async () => {
@@ -47,8 +47,7 @@ export default function Profile01({
       localStorage.removeItem("usuario");
       localStorage.removeItem("rol");
   
-      // Redirige al login
-      router.push("/login");
+      router.push("/login")
     } catch (error) {
       console.error("Error al cerrar sesión:", error);
     }
