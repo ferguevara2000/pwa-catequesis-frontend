@@ -1,5 +1,7 @@
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
+
 export const login = async (usuario: string, password: string) => {
-    const res = await fetch('http://localhost:3002/api/auth/login', {
+    const res = await fetch(`${API_URL}/auth/login`, {
       method: 'POST',
       credentials: 'include', // 👈 importante para enviar/recibir cookies
       headers: {

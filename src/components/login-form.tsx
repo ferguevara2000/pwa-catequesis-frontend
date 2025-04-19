@@ -10,19 +10,20 @@ import { login } from "@/services/auth"; // 👈 importar tu función
 import { useUser } from "@/context/UserContext";
 import { useRouter } from "next/navigation";
 
-
-export function LoginForm({ className, ...props }: React.ComponentProps<"div">) {
+export function LoginForm({
+  className,
+  ...props
+}: React.ComponentProps<"div">) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const {setUser} = useUser();
+  const { setUser } = useUser();
   const router = useRouter();
-
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError("");
-  
+
     try {
       const response = await login(username, password);
       console.log("Login exitoso:", response);
@@ -30,6 +31,7 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
       localStorage.setItem("rol", response.rol);
       setUser({ nombre: response.usuario, rol: response.rol });
       router.push("/dashboard"); // 👈 Redirección al dashboard
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       console.error(err);
       setError(err.message || "Error al iniciar sesión");
@@ -38,7 +40,7 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
-      <Card className="overflow-hidden">
+      <Card className="overflow-hidden bg-white dark:bg-[#1F1F23] text-gray-900 dark:text-white">
         <CardContent className="grid p-0 md:grid-cols-2">
           <form className="p-6 md:p-8" onSubmit={handleSubmit}>
             <div className="flex flex-col gap-6">
@@ -58,13 +60,17 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
                   required
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
+                  className="bg-background text-foreground"
                 />
               </div>
 
               <div className="grid gap-2">
                 <div className="flex items-center">
                   <Label htmlFor="password">Contraseña</Label>
-                  <a href="#" className="ml-auto text-sm underline-offset-2 hover:underline">
+                  <a
+                    href="#"
+                    className="ml-auto text-sm underline-offset-2 hover:underline"
+                  >
                     ¿Olvidaste tu contraseña?
                   </a>
                 </div>
@@ -74,6 +80,7 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  className="bg-background text-foreground"
                 />
               </div>
 
@@ -97,11 +104,12 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
               </div>
             </div>
           </form>
-          <div className="relative hidden bg-muted md:block">
+
+          <div className="relative hidden md:block">
             <img
               src="https://i.imgur.com/NOqhDF8.png"
-              alt="Image"
-              className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
+              alt="Fondo Catequesis"
+              className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.3] dark:grayscale"
             />
           </div>
         </CardContent>
