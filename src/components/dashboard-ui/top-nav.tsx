@@ -1,11 +1,12 @@
 "use client"
 
-import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import Image from "next/image"
-import { Bell, ChevronRight } from "lucide-react"
-import Profile01 from "./profile-01"
+import { usePathname } from "next/navigation"
 import Link from "next/link"
+import Image from "next/image"
+import { ChevronRight, Bell } from "lucide-react"
+import Profile01 from "./profile-01"
 import { ThemeToggle } from "../theme-toggle"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 
 interface BreadcrumbItem {
   label: string
@@ -13,9 +14,18 @@ interface BreadcrumbItem {
 }
 
 export default function TopNav() {
+  const pathname = usePathname()
+
+  const pathParts = pathname.split("/").filter(Boolean)
+
+  const formatLabel = (label: string) =>
+    label.charAt(0).toUpperCase() + label.slice(1).replace(/-/g, " ")
+
   const breadcrumbs: BreadcrumbItem[] = [
-    { label: "home", href: "#" },
-    { label: "dashboard", href: "#" },
+    ...pathParts.map((part, idx) => ({
+      label: formatLabel(part),
+      href: "/" + pathParts.slice(0, idx + 1).join("/"),
+    })),
   ]
 
   return (
@@ -23,17 +33,15 @@ export default function TopNav() {
       <div className="font-medium text-sm hidden sm:flex items-center space-x-1 truncate max-w-[300px]">
         {breadcrumbs.map((item, index) => (
           <div key={item.label} className="flex items-center">
-            {index > 0 && <ChevronRight className="h-4 w-4 text-gray-500 dark:text-gray-400 mx-1" />}
-            {item.href ? (
-              <Link
-                href={item.href}
-                className="text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 transition-colors"
-              >
-                {item.label}
-              </Link>
-            ) : (
-              <span className="text-gray-900 dark:text-gray-100">{item.label}</span>
+            {index > 0 && (
+              <ChevronRight className="h-4 w-4 text-gray-500 dark:text-gray-400 mx-1" />
             )}
+            <Link
+              href={item.href ?? "#"}
+              className="text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 transition-colors"
+            >
+              {item.label}
+            </Link>
           </div>
         ))}
       </div>

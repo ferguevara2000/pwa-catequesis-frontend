@@ -1,6 +1,5 @@
 import { Role } from "@/types/user"
 import {
-    BarChart2,
     Receipt,
     Building2,
     CreditCard,
@@ -9,6 +8,7 @@ import {
     Settings,
     HelpCircle,
     Home,
+    User,
   } from "lucide-react"
 
   interface NavItem {
@@ -28,10 +28,10 @@ import {
       section: "Overview",
     },
     {
-      label: "Analytics",
-      href: "/analytics",
-      icon: BarChart2,
-      roles: ["Catequista"],
+      label: "Usuarios",
+      href: "/dashboard/usuarios",
+      icon: User,
+      roles: ["Administrador", "Catequista"],
       section: "Overview",
     },
     {
