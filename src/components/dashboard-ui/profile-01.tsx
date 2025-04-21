@@ -44,8 +44,10 @@ export default function Profile01({
   
       // Limpia el estado del frontend
       setUser(null);
+      localStorage.removeItem("nombre");
       localStorage.removeItem("usuario");
       localStorage.removeItem("rol");
+      localStorage.removeItem("userData")
   
       router.push("/login")
     } catch (error) {
@@ -109,7 +111,7 @@ export default function Profile01({
               type="button"
               className="w-full flex items-center justify-between p-2 
                                 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 
-                                rounded-lg transition-colors duration-200"
+                                rounded-lg transition-colors duration-200 cursor-pointer"
             >
               <div className="flex items-center gap-2">
                 <LogOut className="w-4 h-4" />

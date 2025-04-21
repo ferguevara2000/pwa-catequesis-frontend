@@ -1,10 +1,6 @@
 "use client";
 import { createContext, useContext, useEffect, useState } from "react";
-
-type User = {
-  nombre: string;
-  rol: string;
-} | null;
+import { User } from "@/types/user";
 
 const UserContext = createContext<{
   user: User;
@@ -18,26 +14,27 @@ const UserContext = createContext<{
 
 export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUserState] = useState<User>(null);
-  const [loading, setLoading] = useState(true); // 👈 loading
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const nombre = localStorage.getItem("usuario");
-    const rol = localStorage.getItem("rol");
-
-    if (nombre && rol) {
-      setUserState({ nombre, rol });
+    if (typeof window !== "undefined") {
+      const storedUser = localStorage.getItem("user");
+      if (storedUser) {
+        try {
+          setUserState(JSON.parse(storedUser));
+        } catch (err) {
+          console.error("Error al parsear el usuario:", err);
+        }
+      }
+      setLoading(false);
     }
-
-    setLoading(false); // 👈 una vez que leí localStorage
   }, []);
 
   const setUser = (user: User) => {
     if (user) {
-      localStorage.setItem("usuario", user.nombre);
-      localStorage.setItem("rol", user.rol);
+      localStorage.setItem("user", JSON.stringify(user));
     } else {
-      localStorage.removeItem("usuario");
-      localStorage.removeItem("rol");
+      localStorage.removeItem("user");
     }
     setUserState(user);
   };

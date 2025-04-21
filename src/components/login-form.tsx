@@ -30,9 +30,8 @@ export function LoginForm({
       setLoading(true);
       const response = await login(username, password);
       console.log("Login exitoso:", response);
-      localStorage.setItem("usuario", response.usuario);
-      localStorage.setItem("rol", response.rol);
-      setUser({ nombre: response.usuario, rol: response.rol });
+      localStorage.setItem("user", JSON.stringify(response));
+      setUser({ nombre: response.nombre, usuario: response.usuario, rol: response.rol });
       router.push("/dashboard"); // 👈 Redirección al dashboard
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
