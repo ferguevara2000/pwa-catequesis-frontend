@@ -3,6 +3,7 @@ import { cn } from "@/lib/utils";
 import { UserProvider } from "@/context/UserContext";
 import "./globals.css"; // 👈 asegúrate de que exista este archivo y tenga tus estilos tailwind
 import { ThemeProvider } from "@/components/theme-provider";
+import { Toaster } from "@/components/ui/sonner"
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,6 +19,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
         <UserProvider>
           {children}
+          <Toaster/>
         </UserProvider>
       </ThemeProvider>
       </body>

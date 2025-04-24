@@ -1,14 +1,9 @@
 import { useState, useMemo } from "react"
-import { Pencil, Trash2, ChevronUp, ChevronDown, ChevronsUpDown } from "lucide-react"
+import { Pencil, ChevronUp, ChevronDown, ChevronsUpDown } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-
-const mockUsers = [
-  { id: 1, name: "Juan Pérez", user: "ferguevara", role: "Administrador", email: "juan@example.com" },
-  { id: 1, name: "Juan Pérez", user: "ferguevara", role: "Administrador", email: "juan@example.com" },
-  { id: 1, name: "Juan Pérez", user: "ferguevara", role: "Administrador", email: "juan@example.com" },
-  { id: 1, name: "Juan Pérez", user: "ferguevara", role: "Administrador", email: "juan@example.com" },
-]
+import { User } from "@/services/users"
+import DeleteAlertDialog from "../ui-myself/deleteAlertDialog"
 
 type SortDirection = "asc" | "desc" | null
 
@@ -19,8 +14,6 @@ const columns = [
   { key: "email", label: "Correo" },
 ]
 
-type User = typeof mockUsers[number]
-
 function maskEmail(email: string): string {
   const [user, domain] = email.split("@")
   if (!user || !domain) return email
@@ -29,7 +22,7 @@ function maskEmail(email: string): string {
   return `${visiblePart}${maskedPart}@${domain}`
 }
 
-export default function UserTable({ onEdit }: { onEdit: (user: User) => void }) {
+export default function UserTable({ users, onEdit, onDelete }: { users: User[]; onEdit: (user: User) => void; onDelete: (user:User) => void }) {
   const [search, setSearch] = useState("")
   const [sortColumn, setSortColumn] = useState<keyof User | null>(null)
   const [sortDirection, setSortDirection] = useState<SortDirection>(null)
@@ -50,13 +43,13 @@ export default function UserTable({ onEdit }: { onEdit: (user: User) => void }) 
   }
 
   const filteredUsers = useMemo(() => {
-    const filtered = mockUsers.filter(
+    const filtered = users.filter(
       u =>
-        u.name.toLowerCase().includes(search.toLowerCase()) ||
+        u.nombre.toLowerCase().includes(search.toLowerCase()) ||
         u.email.toLowerCase().includes(search.toLowerCase()) ||
-        u.role.toLowerCase().includes(search.toLowerCase())
+        u.rol.toLowerCase().includes(search.toLowerCase())
     )
-
+  
     if (sortColumn && sortDirection) {
       filtered.sort((a, b) => {
         const valueA = a[sortColumn] || ""
@@ -66,10 +59,10 @@ export default function UserTable({ onEdit }: { onEdit: (user: User) => void }) 
         return 0
       })
     }
-
+  
     return filtered
-  }, [search, sortColumn, sortDirection])
-
+  }, [search, sortColumn, sortDirection, users]) // ✅ agregado "users"
+  
   const paginatedUsers = useMemo(() => {
     const start = (currentPage - 1) * pageSize
     return filteredUsers.slice(start, start + pageSize)
@@ -120,17 +113,16 @@ export default function UserTable({ onEdit }: { onEdit: (user: User) => void }) 
           <tbody>
             {paginatedUsers.map(user => (
               <tr key={user.id} className="border-t hover:bg-muted/30">
-                <td className="px-4 py-3">{user.name}</td>
-                <td className="px-4 py-3">{user.user}</td>
-                <td className="px-4 py-3 capitalize">{user.role}</td>
+                <td className="px-4 py-3">{user.nombre}</td>
+                <td className="px-4 py-3">{user.usuario}</td>
+                <td className="px-4 py-3 capitalize">{user.rol}</td>
                 <td className="px-4 py-3">{maskEmail(user.email)}</td>
                 <td className="px-4 py-3 text-right space-x-2">
-                  <Button variant="outline" size="icon" onClick={() => onEdit(user)}>
+                  <Button variant="outline" size="icon" onClick={() => onEdit(user)} className="cursor-pointer">
                     <Pencil className="w-4 h-4" />
                   </Button>
-                  <Button variant="destructive" size="icon">
-                    <Trash2 className="w-4 h-4" />
-                  </Button>
+
+                  <DeleteAlertDialog onConfirm={() => onDelete(user)} />
                 </td>
               </tr>
             ))}
