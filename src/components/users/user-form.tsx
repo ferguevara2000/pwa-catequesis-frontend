@@ -17,17 +17,19 @@ import {
 import { toast } from "sonner";
 import clsx from "clsx";
 import { z } from "zod";
-import { usuarioSchema } from "@/lib/validations/usuarioSchema";
-import { Info } from "lucide-react";
+import { usuarioSchema, usuarioSchemaUpdate } from "@/lib/validations/usuarioSchema";
+import { Info, Eye } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { createUser } from "@/services/users";
+import { createUser, updateUser } from "@/services/users";
+import UpdatePasswordModal from "./updatePasswordModal";
 
 type FormData = {
+  id?: string;
   nombre: string;
   usuario: string;
   contraseña: string;
@@ -60,6 +62,10 @@ export default function UserForm({
 
   const [errors, setErrors] = useState<Record<string, string>>({});
   const isCreating = !user;
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [openPasswordModal, setOpenPasswordModal] = useState(false);
+
 
   useEffect(() => {
     if (user) {
@@ -100,11 +106,19 @@ export default function UserForm({
   const handleSubmit = async () => {
     const newErrors: Record<string, string> = {};
 
-    // Validación previa: campos obligatorios vacíos
-    if (!formData.nombre.trim()) newErrors.nombre = "Campo requerido";
-    if (!formData.usuario.trim()) newErrors.usuario = "Campo requerido";
-    if (!formData.contraseña.trim()) newErrors.contraseña = "Campo requerido";
-    if (!formData.rol.trim()) newErrors.rol = "Campo requerido";
+      if (isCreating){
+        // Validación previa: campos obligatorios vacíos
+        if (!formData.nombre.trim()) newErrors.nombre = "Campo requerido";
+        if (!formData.usuario.trim()) newErrors.usuario = "Campo requerido";
+        if (!formData.contraseña.trim()) newErrors.contraseña = "Campo requerido";
+        if (!formData.rol.trim()) newErrors.rol = "Campo requerido";
+        if (!formData.email.trim()) newErrors.email = "Campo requerido";
+      }else {
+        if (!formData.nombre.trim()) newErrors.nombre = "Campo requerido";
+        if (!formData.usuario.trim()) newErrors.usuario = "Campo requerido";
+        if (!formData.rol.trim()) newErrors.rol = "Campo requerido";
+        if (!formData.email.trim()) newErrors.email = "Campo requerido";
+      }
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
@@ -122,8 +136,15 @@ export default function UserForm({
     }
 
     try {
-      const validated = usuarioSchema.parse(formData);
-      await createUser(validated)
+      const validated = isCreating
+        ? usuarioSchema.parse(formData)
+        : usuarioSchemaUpdate.parse(formData)
+
+      if (isCreating) {
+        await createUser(validated);
+      } else {
+        await updateUser(validated, user.id!);
+      }
       toast.success("Usuario guardado exitosamente");
       setFormData({
       nombre: "",
@@ -145,6 +166,7 @@ export default function UserForm({
         });
         setErrors(zodErrors);
         toast.error("Corrige los errores del formulario");
+        console.log(zodErrors)
       } else {
         toast.error("Error inesperado al validar");
       }
@@ -168,7 +190,7 @@ export default function UserForm({
           label: "Correo electrónico",
           name: "email",
           type: "email",
-          required: false,
+          required: true,
         },
         { label: "Teléfono", name: "phone", type: "tel", required: false },
       ].map(({ label, name, type, required }) => (
@@ -192,71 +214,108 @@ export default function UserForm({
       ))}
 
       {/* Campo contraseña y confirmar contraseña */}
-      <div className="space-y-1">
-        <label className="block text-sm font-medium text-muted-foreground">
-          <div className="flex items-center gap-1">
-            <span>Contraseña *</span>
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Info
-                    size={14}
-                    className="text-muted-foreground cursor-pointer"
-                  />
-                </TooltipTrigger>
-                <TooltipContent side="top">
-                  <p className="max-w-xs text-sm">
-                    Mínimo 8 caracteres, al menos una mayúscula y un número.
-                  </p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
+      {isCreating ? (
+        <>  
+          <div className="space-y-1">
+            <label className="block text-sm font-medium text-muted-foreground">
+              <div className="flex items-center gap-1">
+                <span>Contraseña *</span>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Info
+                        size={14}
+                        className="text-muted-foreground cursor-pointer"
+                      />
+                    </TooltipTrigger>
+                    <TooltipContent side="top">
+                      <p className="max-w-xs text-sm">
+                        Mínimo 8 caracteres, al menos una mayúscula y un número.
+                      </p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
+            </label>
+            <div className="relative">
+              <Input
+                name="contraseña"
+                type={showPassword ? "text" : "password"}
+                value={formData.contraseña}
+                onChange={handleChange}
+                className={clsx(errors.contraseña && "border-red-500")}
+              />
+              <button
+                type="button"
+                className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground"
+                onMouseDown={() => setShowPassword(true)}
+                onMouseUp={() => setShowPassword(false)}
+                onMouseLeave={() => setShowPassword(false)}
+              >
+                <Eye size={16} />
+              </button>
+            </div>
+            {errors.contraseña && (
+              <p className="text-xs text-red-500">{errors.contraseña}</p>
+            )}
           </div>
-        </label>
-        <Input
-          name="contraseña"
-          type="password"
-          value={formData.contraseña}
-          onChange={handleChange}
-          className={clsx(errors.contraseña && "border-red-500")}
-        />
-        {errors.contraseña && (
-          <p className="text-xs text-red-500">{errors.contraseña}</p>
-        )}
-      </div>
-
-      {!user && (
+          <div className="space-y-1">
+            <label className="block text-sm font-medium text-muted-foreground">
+              <div className="flex items-center gap-1">
+                <span>Confirmar contraseña *</span>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Info
+                        size={14}
+                        className="text-muted-foreground cursor-pointer"
+                      />
+                    </TooltipTrigger>
+                    <TooltipContent side="top">
+                      <p className="max-w-xs text-sm">
+                        Repite la contraseña para verificar que sea correcta.
+                      </p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
+            </label>
+            <div className="relative">
+              <Input
+                name="confirmarContraseña"
+                type={showConfirmPassword ? "text" : "password"}
+                value={formData.confirmarContraseña || ""}
+                onChange={handleChange}
+                className={clsx(errors.confirmarContraseña && "border-red-500")}
+              />
+              <button
+                type="button"
+                className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground"
+                onMouseDown={() => setShowConfirmPassword(true)}
+                onMouseUp={() => setShowConfirmPassword(false)}
+                onMouseLeave={() => setShowConfirmPassword(false)}
+              >
+                <Eye size={16} />
+              </button>
+            </div>
+            {errors.confirmarContraseña && (
+              <p className="text-xs text-red-500">{errors.confirmarContraseña}</p>
+            )}
+          </div>
+        </>
+      ) : (
         <div className="space-y-1">
           <label className="block text-sm font-medium text-muted-foreground">
-            <div className="flex items-center gap-1">
-              <span>Confirmar contraseña *</span>
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Info
-                      size={14}
-                      className="text-muted-foreground cursor-pointer"
-                    />
-                  </TooltipTrigger>
-                  <TooltipContent side="top">
-                    <p className="max-w-xs text-sm">
-                      Repite la contraseña para verificar que sea correcta.
-                    </p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            </div>
+            Contraseña
           </label>
-          <Input
-            name="confirmarContraseña"
-            type="password"
-            value={formData.confirmarContraseña || ""}
-            onChange={handleChange}
-            className={clsx(errors.confirmarContraseña && "border-red-500")}
+          <Button className="cursor-pointer" onClick={() => setOpenPasswordModal(true)} variant="outline">
+            Actualizar contraseña
+          </Button>
+          <UpdatePasswordModal
+            open={openPasswordModal}
+            onClose={() => setOpenPasswordModal(false)}
+            userId={user?.id}
           />
-          {errors.confirmarContraseña && (
-            <p className="text-xs text-red-500">{errors.confirmarContraseña}</p>
-          )}
         </div>
       )}
 
