@@ -31,6 +31,7 @@ type FormData = {
   nombre: string;
   usuario: string;
   contraseña: string;
+  confirmarContraseña: string;
   email: string;
   phone: string;
   rol: string;
@@ -51,12 +52,14 @@ export default function UserForm({
     nombre: "",
     usuario: "",
     contraseña: "",
+    confirmarContraseña: "",
     email: "",
     phone: "",
     rol: "",
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const isCreating = !user;
 
   useEffect(() => {
     if (user) {
@@ -64,6 +67,7 @@ export default function UserForm({
         nombre: user.nombre ?? "",
         usuario: user.usuario ?? "",
         contraseña: "",
+        confirmarContraseña: "",
         email: user.email ?? "",
         phone: user.phone ?? "",
         rol: user.rol ?? "",
@@ -73,6 +77,7 @@ export default function UserForm({
         nombre: "",
         usuario: "",
         contraseña: "",
+        confirmarContraseña: "",
         email: "",
         phone: "",
         rol: "",
@@ -107,16 +112,24 @@ export default function UserForm({
       return;
     }
 
+    if (isCreating && formData.contraseña !== formData.confirmarContraseña) {
+      setErrors((prev) => ({
+        ...prev,
+        confirmarContraseña: "Las contraseñas no coinciden",
+      }));
+      toast.error("Las contraseñas no coinciden");
+      return;
+    }
+
     try {
       const validated = usuarioSchema.parse(formData);
-      const create = await createUser(validated)
-      console.log(validated)
-      console.log(create)
+      await createUser(validated)
       toast.success("Usuario guardado exitosamente");
       setFormData({
       nombre: "",
       usuario: "",
       contraseña: "",
+      confirmarContraseña: "",
       email: "",
       phone: "",
       rol: "",
@@ -140,98 +153,143 @@ export default function UserForm({
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>
-            {user ? "Editar usuario" : "Crear nuevo usuario"}
-          </DialogTitle>
-        </DialogHeader>
+  <DialogContent>
+    <DialogHeader>
+      <DialogTitle>
+        {user ? "Editar usuario" : "Crear nuevo usuario"}
+      </DialogTitle>
+    </DialogHeader>
 
-        <div className="space-y-4 pt-2">
-          {[
-            { label: "Nombre", name: "nombre", type: "text", required: true },
-            { label: "Usuario", name: "usuario", type: "text", required: true },
-            {
-              label: "Contraseña",
-              name: "contraseña",
-              type: "password",
-              required: true,
-            },
-            {
-              label: "Correo electrónico",
-              name: "email",
-              type: "email",
-              required: false,
-            },
-            { label: "Teléfono", name: "phone", type: "tel", required: false },
-          ].map(({ label, name, type, required }) => (
-            <div className="space-y-1" key={name}>
-              <label className="block text-sm font-medium text-muted-foreground">
-                {label === "Contraseña" ? (
-                  <div className="flex items-center gap-1">
-                    <span>{label} *</span>
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <Info
-                            size={14}
-                            className="text-muted-foreground cursor-pointer"
-                          />
-                        </TooltipTrigger>
-                        <TooltipContent side="top">
-                          <p className="max-w-xs text-sm">
-                            Mínimo 8 caracteres, al menos una mayúscula y un
-                            número.
-                          </p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  </div>
-                ) : (
-                  <span>
-                    {label} {required && "*"}
-                  </span>
-                )}
-              </label>
-              <Input
-                name={name}
-                type={type}
-                value={formData[name as keyof FormData]}
-                onChange={handleChange}
-                className={clsx(errors[name] && "border-red-500")}
-              />
-              {errors[name] && (
-                <p className="text-xs text-red-500">{errors[name]}</p>
-              )}
-            </div>
-          ))}
+    <div className="space-y-4 pt-2">
+      {[
+        { label: "Nombre", name: "nombre", type: "text", required: true },
+        { label: "Usuario", name: "usuario", type: "text", required: true },
+        {
+          label: "Correo electrónico",
+          name: "email",
+          type: "email",
+          required: false,
+        },
+        { label: "Teléfono", name: "phone", type: "tel", required: false },
+      ].map(({ label, name, type, required }) => (
+        <div className="space-y-1" key={name}>
+          <label className="block text-sm font-medium text-muted-foreground">
+            <span>
+              {label} {required && "*"}
+            </span>
+          </label>
+          <Input
+            name={name}
+            type={type}
+            value={formData[name as keyof FormData]}
+            onChange={handleChange}
+            className={clsx(errors[name] && "border-red-500")}
+          />
+          {errors[name] && (
+            <p className="text-xs text-red-500">{errors[name]}</p>
+          )}
+        </div>
+      ))}
 
-          <div className="space-y-1">
-            <label className="block text-sm font-medium text-muted-foreground">
-              Rol *
-            </label>
-            <Select value={formData.rol} onValueChange={handleRoleChange}>
-              <SelectTrigger
-                className={clsx("w-full", errors.rol && "border-red-500")}
-              >
-                <SelectValue placeholder="Seleccionar rol" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="Administrador">Administrador</SelectItem>
-                <SelectItem value="Catequista">Catequista</SelectItem>
-                <SelectItem value="Estudiante">Estudiante</SelectItem>
-              </SelectContent>
-            </Select>
-            {errors.rol && <p className="text-xs text-red-500">{errors.rol}</p>}
+      {/* Campo contraseña y confirmar contraseña */}
+      <div className="space-y-1">
+        <label className="block text-sm font-medium text-muted-foreground">
+          <div className="flex items-center gap-1">
+            <span>Contraseña *</span>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Info
+                    size={14}
+                    className="text-muted-foreground cursor-pointer"
+                  />
+                </TooltipTrigger>
+                <TooltipContent side="top">
+                  <p className="max-w-xs text-sm">
+                    Mínimo 8 caracteres, al menos una mayúscula y un número.
+                  </p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </div>
-        </div>
+        </label>
+        <Input
+          name="contraseña"
+          type="password"
+          value={formData.contraseña}
+          onChange={handleChange}
+          className={clsx(errors.contraseña && "border-red-500")}
+        />
+        {errors.contraseña && (
+          <p className="text-xs text-red-500">{errors.contraseña}</p>
+        )}
+      </div>
 
-        <div className="flex justify-end pt-4">
-          <Button onClick={handleSubmit} className="cursor-pointer">
-            {user ? "Guardar cambios" : "Crear"}
-          </Button>
+      {!user && (
+        <div className="space-y-1">
+          <label className="block text-sm font-medium text-muted-foreground">
+            <div className="flex items-center gap-1">
+              <span>Confirmar contraseña *</span>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Info
+                      size={14}
+                      className="text-muted-foreground cursor-pointer"
+                    />
+                  </TooltipTrigger>
+                  <TooltipContent side="top">
+                    <p className="max-w-xs text-sm">
+                      Repite la contraseña para verificar que sea correcta.
+                    </p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </div>
+          </label>
+          <Input
+            name="confirmarContraseña"
+            type="password"
+            value={formData.confirmarContraseña || ""}
+            onChange={handleChange}
+            className={clsx(errors.confirmarContraseña && "border-red-500")}
+          />
+          {errors.confirmarContraseña && (
+            <p className="text-xs text-red-500">{errors.confirmarContraseña}</p>
+          )}
         </div>
-      </DialogContent>
-    </Dialog>
+      )}
+
+      {/* Campo rol */}
+      <div className="space-y-1">
+        <label className="block text-sm font-medium text-muted-foreground">
+          Rol *
+        </label>
+        <Select value={formData.rol} onValueChange={handleRoleChange}>
+          <SelectTrigger
+            className={clsx("w-full", errors.rol && "border-red-500")}
+          >
+            <SelectValue placeholder="Seleccionar rol" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="Administrador">Administrador</SelectItem>
+            <SelectItem value="Catequista">Catequista</SelectItem>
+            <SelectItem value="Estudiante">Estudiante</SelectItem>
+          </SelectContent>
+        </Select>
+        {errors.rol && (
+          <p className="text-xs text-red-500">{errors.rol}</p>
+        )}
+      </div>
+    </div>
+
+    <div className="flex justify-end pt-4">
+      <Button onClick={handleSubmit} className="cursor-pointer">
+        {user ? "Guardar cambios" : "Crear"}
+      </Button>
+    </div>
+  </DialogContent>
+</Dialog>
+
   );
 }
