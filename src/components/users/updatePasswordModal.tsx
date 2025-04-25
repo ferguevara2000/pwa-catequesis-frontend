@@ -16,6 +16,7 @@ import {
     TooltipProvider,
     TooltipTrigger,
   } from "@/components/ui/tooltip";
+import { updatePassword } from "@/services/users";
   
   // Esquema de validación
   const passwordSchema = z.object({
@@ -53,7 +54,8 @@ import {
     const handleSubmit = async () => {
       try {
         const validated = passwordSchema.parse(formData);
-        console.log("Actualizando contraseña de", userId, validated.password);
+        console.log(validated)
+        await updatePassword(userId!, validated.password)
         toast.success("Contraseña actualizada correctamente");
         onClose();
       } catch (err) {

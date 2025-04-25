@@ -63,5 +63,20 @@ export type User = {
       throw new Error("No se pudo eliminar el usuario");
     }
   }
+
+  export async function updatePassword(userId: string, contraseña: string): Promise<void> {
+    const response = await fetch(`${API_URL}/usuarios/${userId}/password`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ contraseña }),
+    });
+  
+    if (!response.ok) {
+      throw new Error("No se pudo actualizar la contraseña");
+    }
+  }
+  
   
   
