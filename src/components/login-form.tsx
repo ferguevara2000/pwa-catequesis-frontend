@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { login } from "@/services/auth"; // 👈 importar tu función
 import { useUser } from "@/context/UserContext";
 import { useRouter } from "next/navigation";
-import { Loader2 } from "lucide-react";
+import { Loader2, Eye, EyeOff } from "lucide-react";
 
 export function LoginForm({
   className,
@@ -21,6 +21,7 @@ export function LoginForm({
   const { setUser } = useUser();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -78,14 +79,25 @@ export function LoginForm({
                     ¿Olvidaste tu contraseña?
                   </a>
                 </div>
-                <Input
-                  id="password"
-                  type="password"
-                  required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="bg-white text-black dark:bg-[#2A2A2E] dark:text-white dark:placeholder:text-gray-400"
-                />
+
+                <div className="relative">
+                  <Input
+                    id="password"
+                    type={showPassword ? "text" : "password"}
+                    required
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="bg-white text-black pr-10 dark:bg-[#2A2A2E] dark:text-white dark:placeholder:text-gray-400"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-300"
+                    aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
+                  >
+                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  </button>
+                </div>
               </div>
 
               {error && <p className="text-sm text-red-500">{error}</p>}
