@@ -2,6 +2,7 @@ import { Role } from "@/types/user"
 import {
     HelpCircle,
     Home,
+    Shapes,
     User,
   } from "lucide-react"
 
@@ -19,14 +20,21 @@ import {
       href: "/dashboard",
       icon: Home,
       roles: ["Administrador", "Catequista", "Estudiante"],
-      section: "Overview",
+      section: "General",
     },
     {
       label: "Usuarios",
       href: "/dashboard/usuarios",
       icon: User,
-      roles: ["Administrador", "Catequista"],
-      section: "Overview",
+      roles: ["Administrador"],
+      section: "General",
+    },
+    {
+      label: "Cursos",
+      href: "/dashboard/cursos",
+      icon: Shapes,
+      roles: ["Administrador"],
+      section: "General",
     },
     {
       label: "Ayuda",

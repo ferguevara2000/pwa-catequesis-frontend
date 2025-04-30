@@ -33,7 +33,7 @@ import {
               ¿Estás seguro?
             </AlertDialogTitle>
             <AlertDialogDescription className="text-sm text-neutral-600 dark:text-neutral-300">
-              Esta acción eliminará el usuario permanentemente. No se puede deshacer.
+              Esta acción eliminará la información permanentemente. No se puede deshacer.
             </AlertDialogDescription>
           </AlertDialogHeader>
   

@@ -3,7 +3,7 @@ import { Pencil, ChevronUp, ChevronDown, ChevronsUpDown } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { User } from "@/services/users"
-import DeleteAlertDialog from "../ui-myself/deleteAlertDialog"
+import DeleteAlertDialog from "../shared/deleteAlertDialog"
 
 type SortDirection = "asc" | "desc" | null
 
