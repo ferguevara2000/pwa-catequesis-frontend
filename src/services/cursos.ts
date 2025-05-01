@@ -1,3 +1,5 @@
+import { Catequista } from "./users";
+
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export type Nivel = {
@@ -14,6 +16,7 @@ export type Curso = {
     fecha_fin: Date
     horario: string
     nivel_nombre: string
+    catequista?: Catequista
   }
 
   export type CursoDTO = {

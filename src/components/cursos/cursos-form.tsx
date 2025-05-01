@@ -19,6 +19,7 @@ import {
   import { z } from "zod";
   import { cursoSchema } from "@/lib/validations/cursoSchema";
   import { createCurso, getAllNiveles, Nivel, updateCurso } from "@/services/cursos";
+import { Catequista, getAllCatequistas } from "@/services/users";
   
   type CursoFormData = {
     id?: string;
@@ -29,6 +30,8 @@ import {
     fecha_inicio: string;
     fecha_fin: string;
     horario: string;
+    catequista_id: string;
+    catequista?: Catequista;
   };
   
   export default function CursoForm({
@@ -49,12 +52,23 @@ import {
       fecha_inicio: "",
       fecha_fin: "",
       horario: "",
+      catequista_id: ""
     });
     const [errors, setErrors] = useState<Record<string, string>>({});
     const [niveles, setNiveles] = useState<Nivel[]>([]);
+    const [catequistas, setCatequistas] = useState<Catequista[]>([]);
   
     const isCreating = !curso;
   
+    useEffect(() => {
+      async function fetchCatequistas() {
+        const data = await getAllCatequistas();
+        setCatequistas(data);
+      }
+    
+      fetchCatequistas();
+    }, []);
+
     useEffect(() => {
       const fetchNiveles = async () => {
         try {
@@ -70,7 +84,7 @@ import {
     }, []);
   
     useEffect(() => {
-      if (curso) {
+      if (curso && catequistas) {
         setFormData({
           nombre: curso.nombre ?? "",
           descripcion: curso.descripcion ?? "",
@@ -78,6 +92,7 @@ import {
           fecha_inicio: curso.fecha_inicio ?? "",
           fecha_fin: curso.fecha_fin ?? "",
           horario: curso.horario ?? "",
+          catequista_id: curso.catequista?.id.toString() ?? ""
         });
       } else {
         setFormData({
@@ -87,10 +102,11 @@ import {
           fecha_inicio: "",
           fecha_fin: "",
           horario: "",
+          catequista_id: ""
         });
       }
       setErrors({});
-    }, [curso]);
+    }, [curso, catequistas]);
   
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       const { name, value } = e.target;
@@ -107,8 +123,10 @@ import {
       try {
         const validated = cursoSchema.parse({
             ...formData,
+            catequista_id: Number(formData.catequista_id),
             nivel_id: Number(formData.nivel_id), // ✅ conversión aquí
           });
+          console.log(validated)
         if (isCreating){
             await createCurso(validated)
         }else{
@@ -125,6 +143,7 @@ import {
           fecha_inicio: "",
           fecha_fin: "",
           horario: "",
+          catequista_id: ""
         });
   
         onCursoSaved?.();
@@ -175,6 +194,31 @@ import {
                 )}
               </div>
             ))}
+
+            {/* Ctequista Select */}
+            <div className="space-y-1">
+              <label className="block text-sm font-medium text-muted-foreground">
+                Catequista *
+              </label>
+              <Select
+                value={formData.catequista_id}
+                onValueChange={(value) => setFormData({ ...formData, catequista_id: value })}
+              >
+                <SelectTrigger className={clsx("w-full", errors.catequista_id && "border-red-500")}>
+                  <SelectValue placeholder="Selecciona un catequista" />
+                </SelectTrigger>
+                <SelectContent>
+                  {catequistas.map((user) => (
+                    <SelectItem key={user.id} value={user.id.toString()}>
+                      {user.nombre}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              {errors.nivel_id && (
+                <p className="text-xs text-red-500">{errors.nivel_id}</p>
+              )}
+            </div>
   
             {/* Nivel Select */}
             <div className="space-y-1">
@@ -198,7 +242,7 @@ import {
               )}
             </div>
   
-            <Button className="w-full" onClick={handleSubmit}>
+            <Button className="w-full cursor-pointer" onClick={handleSubmit}>
               {isCreating ? "Crear curso" : "Actualizar curso"}
             </Button>
           </div>

@@ -26,6 +26,10 @@ export const cursoSchema = z.object({
     .string()
     .regex(/^\d{4}-\d{2}-\d{2}$/, { message: "Formato de fecha de fin inválido (YYYY-MM-DD)" }),
 
+    catequista_id: z
+    .number({ invalid_type_error: "El catequista es obligatorio" })
+    .int({ message: "El catequista debe ser un número entero" }),
+
     horario: z
     .string()
     .regex(
