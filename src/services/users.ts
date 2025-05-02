@@ -14,6 +14,11 @@ export type Catequista = {
   id: number
   nombre: string
 }
+
+export type Estudiante = {
+  id: number
+  nombre: string
+}
   
   export async function getAllUsers(): Promise<User[]> {
     const response = await fetch(`${API_URL}/usuarios`)
@@ -27,6 +32,16 @@ export type Catequista = {
 
   export async function getAllCatequistas(): Promise<Catequista[]> {
     const response = await fetch(`${API_URL}/usuarios/catequistas`)
+  
+    if (!response.ok) {
+      throw new Error("Error al obtener los catequistas")
+    }
+  
+    return response.json()
+  }
+
+  export async function getAllEstudiantes(): Promise<Estudiante[]> {
+    const response = await fetch(`${API_URL}/usuarios/estudiantes`)
   
     if (!response.ok) {
       throw new Error("Error al obtener los catequistas")

@@ -2,6 +2,7 @@ import { Role } from "@/types/user"
 import {
     HelpCircle,
     Home,
+    School,
     Shapes,
     User,
   } from "lucide-react"
@@ -33,6 +34,13 @@ import {
       label: "Cursos",
       href: "/dashboard/cursos",
       icon: Shapes,
+      roles: ["Administrador"],
+      section: "General",
+    },
+    {
+      label: "Matriculación",
+      href: "/dashboard/matriculas",
+      icon: School,
       roles: ["Administrador"],
       section: "General",
     },
