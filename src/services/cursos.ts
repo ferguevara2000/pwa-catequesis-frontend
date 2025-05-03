@@ -39,6 +39,26 @@ export type Curso = {
     return response.json()
   }
 
+  export async function getCursoById(id: string): Promise<Curso[]> {
+    const response = await fetch(`${API_URL}/cursos/${id}`)
+  
+    if (!response.ok) {
+      throw new Error("Error al obtener el curso")
+    }
+  
+    return response.json()
+  }
+
+  export async function getCursoByCatequistaId(id: string): Promise<Curso[]> {
+    const response = await fetch(`${API_URL}/cursos/catequista/${id}`)
+  
+    if (!response.ok) {
+      throw new Error("Error al obtener los cursos")
+    }
+  
+    return response.json()
+  }
+
   export async function getAllNiveles(): Promise<Nivel[]> {
     const response = await fetch(`${API_URL}/cursos/niveles`)
   

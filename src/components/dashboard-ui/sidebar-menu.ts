@@ -45,6 +45,13 @@ import {
       section: "General",
     },
     {
+      label: "Mis Cursos",
+      href: "/dashboard/mis-cursos",
+      icon: School,
+      roles: ["Catequista"],
+      section: "General",
+    },
+    {
       label: "Ayuda",
       href: "/help",
       icon: HelpCircle,
