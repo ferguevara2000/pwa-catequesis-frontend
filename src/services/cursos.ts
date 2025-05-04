@@ -39,7 +39,7 @@ export type Curso = {
     return response.json()
   }
 
-  export async function getCursoById(id: string): Promise<Curso[]> {
+  export async function getCursoById(id: string): Promise<Curso> {
     const response = await fetch(`${API_URL}/cursos/${id}`)
   
     if (!response.ok) {
