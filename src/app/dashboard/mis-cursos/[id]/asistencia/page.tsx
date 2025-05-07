@@ -1,18 +1,16 @@
-// app/cursos/[id]/asistencia/page.tsx
 "use client"
 
-import React, { useEffect, useState } from "react"
-import { useRouter } from "next/navigation"
-import { createAsistencia } from "@/services/asistencia"
+import React, { use, useEffect, useState } from "react"
+import { useRouter, useSearchParams } from "next/navigation"
+import { Asistencia, createAsistencia, getAsistenciaByIdAndDate, updateAsistencia } from "@/services/asistencia"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { toast } from "sonner"
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
+import { getAllEstudiantesByCursoId } from "@/services/estudianteCurso"
 
 interface Estudiante {
-  id: string
+  id: number
   usuario: {
     nombre: string
   }
@@ -20,29 +18,49 @@ interface Estudiante {
 
 export default function AsistenciaPage({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter()
-  const [asistencias, setAsistencias] = useState<Record<string, string>>({})
+  const searchParams = useSearchParams()
+  const [asistencias, setAsistencias] = useState<Record<number, Asistencia>>({}) // Aseguramos que el id sea un número
   const [estudiantes, setEstudiantes] = useState<Estudiante[]>([])
-  const fechaHoy = new Date().toISOString().split("T")[0] // yyyy-mm-dd
-  const { id } = React.use(params)
+  const { id } = use(params)
+  const fechaParam = searchParams.get("fecha")
 
-  // Cargar estudiantes desde el servidor
+  const fechaHoy = fechaParam ?? new Date().toISOString().split("T")[0]
+
   useEffect(() => {
-    fetch(`${API_URL}/estudiantesCurso/curso/${id}`)
-    .then(res => res.json())
-    .then(data => {
-      setEstudiantes(data)
-      const asistenciaInicial: Record<string, string> = {}
-      data.forEach((est: Estudiante) => {
-        asistenciaInicial[est.id] = "Presente"
-      })
-      setAsistencias(asistenciaInicial)
-    })
-  }, [id])
+    async function cargarDatos() {
+      if (fechaParam) {
+        // Modo edición
+        const data = await getAsistenciaByIdAndDate(id, fechaParam)
+        const asistenciasMap: Record<number, Asistencia> = {}
+        const estudiantesMap: Estudiante[] = data.map((a) => {
+          asistenciasMap[a.id!] = a // Usamos matricula_id como clave
+          return {
+            id: a.id!,
+            matricula_id: a.estudiante?.id,
+            usuario: { nombre: a.estudiante!.usuario.nombre }
+          }
+        })
+        setEstudiantes(estudiantesMap)
+        setAsistencias(asistenciasMap)
+      } else {
+        // Modo nuevo
+        const data = await getAllEstudiantesByCursoId(id)
+        setEstudiantes(data)
+        const inicial: Record<number, Asistencia> = {}
+        data.forEach((est) => {
+          inicial[est.id] = { id: est.id, fecha: fechaHoy, estado: "Presente", matricula_id: est.usuario.id! } // Crear objeto AsistenciaDTO
+        })
+        setAsistencias(inicial)
+      }
+    }
 
-  const handleChange = (matriculaId: string, estado: string) => {
+    cargarDatos()
+  }, [id, fechaParam, fechaHoy])
+
+  const handleChange = (matriculaId: number, estado: string) => {
     setAsistencias(prev => ({
       ...prev,
-      [matriculaId]: estado,
+      [matriculaId]: { ...prev[matriculaId], estado } // Actualizamos solo el estado
     }))
   }
 
@@ -50,17 +68,22 @@ export default function AsistenciaPage({ params }: { params: Promise<{ id: strin
     e.preventDefault()
 
     for (const matriculaId in asistencias) {
-      const estado = asistencias[matriculaId]
-      const matricula_id = Number(matriculaId)
-      const asistenciaGuardada= await createAsistencia({
-        fecha: fechaHoy,
-        estado,
-        matricula_id,
-      })
-      console.log(asistenciaGuardada)
+      const asistencia = asistencias[matriculaId]
+      const estado = asistencia.estado
+      const matricula_id = Number(asistencia.estudiante?.id)
+
+      if (fechaParam) {
+        await updateAsistencia({
+          fecha: fechaHoy,
+          estado,
+          matricula_id,
+        }, asistencia.id!.toString()) // Usamos matriculaId como ID
+      } else {
+        await createAsistencia({ fecha: fechaHoy, estado, matricula_id: Number(matriculaId) })
+      }
     }
 
-    toast.success('Asistencia guardada correctamente')
+    toast.success("Asistencia guardada correctamente")
     router.push(`/dashboard/mis-cursos/${id}`)
   }
 
@@ -92,11 +115,11 @@ export default function AsistenciaPage({ params }: { params: Promise<{ id: strin
                     <td className="py-2">{est.usuario.nombre}</td>
                     <td className="py-2">
                       <Select
-                        defaultValue="Presente"
-                        onValueChange={(value) => handleChange(est.id, value)}
+                        value={asistencias[est.id]?.estado} // Usamos el estado de AsistenciaDTO
+                        onValueChange={(value) => handleChange(est.id, value)} // Pasamos el id como número
                       >
                         <SelectTrigger className="w-32 text-left">
-                          <SelectValue />
+                          <SelectValue placeholder="Seleccionar" />
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="Presente">Presente</SelectItem>
