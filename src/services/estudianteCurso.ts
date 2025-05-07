@@ -35,6 +35,16 @@ export type estudianteCurso = {
     return response.json()
   }
 
+  export async function getAllEstudiantesByCursoId(id: string): Promise<estudianteCurso[]> {
+    const response = await fetch(`${API_URL}/estudiantesCurso/curso/${id}`)
+  
+    if (!response.ok) {
+      throw new Error("Error al obtener los estudiantes")
+    }
+  
+    return response.json()
+  }
+
   export async function createEstudianteCurso(data: estudianteCursoDTO) {
     const res = await fetch(`${API_URL}/estudiantesCurso`, {
       method: "POST",

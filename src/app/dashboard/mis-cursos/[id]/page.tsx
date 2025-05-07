@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // app/cursos/[id]/page.tsx
-import { Calendar, Clock, GraduationCap, User } from "lucide-react"
+import { Calendar, ClipboardCheck, Clock, GraduationCap, User } from "lucide-react"
 import { getCursoById } from "@/services/cursos"
 import { notFound } from "next/navigation"
 import {
@@ -11,6 +12,10 @@ import {
 } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { getAllEstudiantesByCursoId } from "@/services/estudianteCurso"
+import { Button } from "@/components/ui/button"
+import Link from "next/link"
 
 interface CursoPageProps {
   params: { id: string }
@@ -22,6 +27,7 @@ export default async function CursoPage({ params }: CursoPageProps) {
 
   if (!data) return notFound()
   const curso = data
+  const estudiantes = await getAllEstudiantesByCursoId(id)
 
   return (
     <div className="container mx-auto py-10">
@@ -66,11 +72,53 @@ export default async function CursoPage({ params }: CursoPageProps) {
 
           <Separator />
 
-          <div className="rounded-lg bg-muted p-4">
-            <h3 className="font-semibold mb-1">Listado de Estudiantes</h3>
-            <p className="text-sm text-muted-foreground">
-              Aquí va a ir el listado de los estudiantes matriculados en el curso.
-            </p>
+          <div>
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="font-semibold">Listado de Estudiantes</h3>
+            <Link href={`/dashboard/mis-cursos/${id}/asistencia`}>
+              <Button className="bg-sky-500/75 hover:bg-sky-500/50 text-white cursor-pointer group relative overflow-hidden transition-all duration-300 active:scale-95">
+                <span className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></span>
+                <span className="relative flex items-center gap-2">
+                  <ClipboardCheck className="w-4 h-4 transition-transform group-hover:scale-110 duration-300" />
+                  Pasar Lista
+                </span>
+              </Button>
+            </Link>
+          </div>
+            {estudiantes?.length ? (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="w-12">#</TableHead>
+                    <TableHead>Nombre del Estudiante</TableHead>
+                    <TableHead className="text-right">Estado</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {estudiantes.map((estudiante: any, index: number) => (
+                    <TableRow key={estudiante.id}>
+                      <TableCell className="font-medium">{index + 1}</TableCell>
+                      <TableCell>{estudiante.usuario.nombre}</TableCell>
+                      <TableCell className="text-right">
+                        <Badge
+                          className={
+                            estudiante.estado === "activo"
+                              ? "bg-green-600 hover:bg-green-700 text-white"
+                              : "bg-cyan-500 hover:bg-red-700"
+                          }
+                        >
+                          {estudiante.estado}
+                        </Badge>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            ) : (
+              <p className="text-muted-foreground text-sm">
+                No hay estudiantes registrados en este curso.
+              </p>
+            )}
           </div>
         </CardContent>
       </Card>
