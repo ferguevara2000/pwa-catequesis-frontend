@@ -1,10 +1,15 @@
 import { Role } from "@/types/user"
 import {
+  CalendarHeart,
+  Church,
+  Cookie,
+  Droplet,
     HelpCircle,
     Home,
     School,
     Shapes,
     User,
+    Wine,
   } from "lucide-react"
 
   interface NavItem {
@@ -50,6 +55,41 @@ import {
       icon: School,
       roles: ["Catequista"],
       section: "General",
+    },
+    {
+      label: "Bautismos",
+      href: "/dashboard/bautismos",
+      icon: Droplet,
+      roles: ["Administrador"],
+      section: "Libros Parroquiales",
+    },
+    {
+      label: "Primera Comunión",
+      href: "/dashboard/primera-comunion",
+      icon: Wine,
+      roles: ["Administrador"],
+      section: "Libros Parroquiales",
+    },
+    {
+      label: "Confirmaciones",
+      href: "/dashboard/confirmaciones",
+      icon: Cookie,
+      roles: ["Administrador"],
+      section: "Libros Parroquiales",
+    },
+    {
+      label: "Matrimonios",
+      href: "/dashboard/matrimonios",
+      icon: Church,
+      roles: ["Administrador"],
+      section: "Libros Parroquiales",
+    },
+    {
+      label: "Defunciones",
+      href: "/dashboard/defunciones",
+      icon: CalendarHeart,
+      roles: ["Administrador"],
+      section: "Libros Parroquiales",
     },
     {
       label: "Ayuda",

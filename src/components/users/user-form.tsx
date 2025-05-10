@@ -334,6 +334,8 @@ export default function UserForm({
             <SelectItem value="Administrador">Administrador</SelectItem>
             <SelectItem value="Catequista">Catequista</SelectItem>
             <SelectItem value="Estudiante">Estudiante</SelectItem>
+            <SelectItem value="Parroco">Parroco</SelectItem>
+            <SelectItem value="Tesorero">Tesorero</SelectItem>
           </SelectContent>
         </Select>
         {errors.rol && (
