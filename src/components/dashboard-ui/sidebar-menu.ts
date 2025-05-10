@@ -65,7 +65,7 @@ import {
     },
     {
       label: "Primera Comunión",
-      href: "/dashboard/primera-comunion",
+      href: "/dashboard/comuniones",
       icon: Wine,
       roles: ["Administrador"],
       section: "Libros Parroquiales",
