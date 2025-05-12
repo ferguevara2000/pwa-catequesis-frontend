@@ -1,5 +1,6 @@
 import { Role } from "@/types/user"
 import {
+  BanknoteArrowUp,
   CalendarHeart,
   Church,
   CircleDollarSign,
@@ -96,6 +97,13 @@ import {
       label: "Finanzas",
       href: "/dashboard/finanzas",
       icon: CircleDollarSign,
+      roles: ["Administrador"],
+      section: "Finanzas",
+    },
+    {
+      label: "Movimientos",
+      href: "/dashboard/movimientos",
+      icon: BanknoteArrowUp,
       roles: ["Administrador"],
       section: "Finanzas",
     },
