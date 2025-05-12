@@ -2,6 +2,7 @@ import { Role } from "@/types/user"
 import {
   CalendarHeart,
   Church,
+  CircleDollarSign,
   Cookie,
   Droplet,
     HelpCircle,
@@ -90,6 +91,13 @@ import {
       icon: CalendarHeart,
       roles: ["Administrador"],
       section: "Libros Parroquiales",
+    },
+    {
+      label: "Finanzas",
+      href: "/dashboard/finanzas",
+      icon: CircleDollarSign,
+      roles: ["Administrador"],
+      section: "Finanzas",
     },
     {
       label: "Ayuda",
