@@ -7,7 +7,7 @@ export type Finanza = {
     total_egresos: number,
     saldo: number,
     actualizado_en: string,
-    barrio?: Barrio,
+    barrios?: Barrio,
     barrio_nombre?: string
 }
 

@@ -26,7 +26,7 @@ export default function FinanzaManagement({ formOpen, onCloseForm, selectedFinan
   
       const dataWithBarrioNombre = data.map((finanza) => ({
         ...finanza,
-        barrio_nombre: finanza.barrio?.nombre ?? "Sin barrio",
+        barrio_nombre: finanza.barrios?.nombre ?? "Sin barrio",
       }));
   
       setFinanza(dataWithBarrioNombre);
