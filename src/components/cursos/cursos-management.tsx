@@ -3,6 +3,7 @@ import { useEffect, useState } from "react"
 import GenericTable, { Column } from "../shared/generic-table"
 import { Curso, deleteCurso, getAllCursos } from "@/services/cursos"
 import CursoForm from "../cursos/cursos-form"
+import { getAllEstudiantesByCursoId } from "@/services/estudianteCurso"
 
 interface Props {
   formOpen: boolean
@@ -44,6 +45,12 @@ export default function CursosManagement({ formOpen, onCloseForm, selectedCursos
 
   const handleDelete = async (curso: Curso) => {
     try {
+      const estudiantes = await getAllEstudiantesByCursoId(curso.id.toString());
+
+      if (estudiantes.length > 0) {
+        toast.error("No se puede eliminar el curso porque tiene estudiantes matriculados");
+        return;
+      }
       await deleteCurso(curso.id!.toString());
       toast.success("Curso eliminado correctamente");
       fetchUsers(); // 🔁 recargar tabla
