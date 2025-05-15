@@ -20,6 +20,7 @@ import {
   import { cursoSchema } from "@/lib/validations/cursoSchema";
   import { createCurso, getAllNiveles, Nivel, updateCurso } from "@/services/cursos";
 import { Catequista, getAllCatequistas } from "@/services/users";
+import { ComboBox } from "../shared/combobox";
   
   type CursoFormData = {
     id?: string;
@@ -165,7 +166,7 @@ import { Catequista, getAllCatequistas } from "@/services/users";
   
     return (
       <Dialog open={open} onOpenChange={onClose}>
-        <DialogContent>
+        <DialogContent className="max-h-[100vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>{isCreating ? "Crear curso" : "Editar curso"}</DialogTitle>
           </DialogHeader>
@@ -195,28 +196,24 @@ import { Catequista, getAllCatequistas } from "@/services/users";
               </div>
             ))}
 
-            {/* Ctequista Select */}
-            <div className="space-y-1">
+            {/* Catequista Combobox */}
+            <div className="space-y-1 w-full">
               <label className="block text-sm font-medium text-muted-foreground">
                 Catequista *
               </label>
-              <Select
+              <ComboBox 
+                options={catequistas.map((c) => ({
+                  value: c.id.toString(),
+                  label: c.nombre
+                }))}
                 value={formData.catequista_id}
-                onValueChange={(value) => setFormData({ ...formData, catequista_id: value })}
-              >
-                <SelectTrigger className={clsx("w-full", errors.catequista_id && "border-red-500")}>
-                  <SelectValue placeholder="Selecciona un catequista" />
-                </SelectTrigger>
-                <SelectContent>
-                  {catequistas.map((user) => (
-                    <SelectItem key={user.id} value={user.id.toString()}>
-                      {user.nombre}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              {errors.nivel_id && (
-                <p className="text-xs text-red-500">{errors.nivel_id}</p>
+                onChange={(value) => setFormData({...formData, catequista_id:value})}
+                label="catequista"
+                placeholder="Seleccione un catequista"
+
+              />
+              {errors.catequista_id && (
+                <p className="text-xs text-red-500">{errors.catequista_id}</p>
               )}
             </div>
   
