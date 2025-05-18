@@ -21,6 +21,7 @@ import {
   import { getAllCursos } from "@/services/cursos";
   import { estudianteCursoSchema } from "@/lib/validations/estudiantesCurso";
   import { createEstudianteCurso, Curso, updateEstudianteCurso, Usuario } from "@/services/estudianteCurso";
+//import { EstudiantesMultiSelect } from "../shared/estudianteMultiSelect";
   
   type MatriculaFormData = {
     id?: string;
@@ -29,6 +30,7 @@ import {
     usuario?: Usuario;
     curso?: Curso;
     estado: "activo" | "aprobado" | "retirado";
+    estudiante_ids?: string[];
   };
   
   export default function MatriculaForm({
@@ -140,6 +142,18 @@ import {
               </Select>
               {errors.usuario_id && <p className="text-xs text-red-500">{errors.usuario_id}</p>}
             </div>
+
+            {/* <div className="space-y-1">
+              <label className="block text-sm font-medium text-muted-foreground">Estudiante *</label>
+              <EstudiantesMultiSelect
+                estudiantes={estudiantes}
+                selected={formData.estudiante_ids || []}
+                onChange={(ids) => setFormData((prev) => ({ ...prev, estudiante_ids: ids }))}
+              />
+              {errors.estudiante_ids && (
+                <p className="text-xs text-red-500">{errors.estudiante_ids}</p>
+              )}
+            </div> */}
   
             {/* Curso Select */}
             <div className="space-y-1">

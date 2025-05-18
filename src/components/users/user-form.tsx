@@ -27,16 +27,20 @@ import {
 } from "@/components/ui/tooltip";
 import { createUser, updateUser } from "@/services/users";
 import UpdatePasswordModal from "./updatePasswordModal";
+import { Barrio, getAllBarrios } from "@/services/finanzas";
 
 type FormData = {
   id?: string;
   nombre: string;
+  apellidos: string;
   usuario: string;
   contraseña: string;
   confirmarContraseña: string;
   email: string;
   phone: string;
   rol: string;
+  barrio_id: string;
+  representante?: string;
 };
 
 export default function UserForm({
@@ -52,12 +56,15 @@ export default function UserForm({
 }) {
   const [formData, setFormData] = useState<FormData>({
     nombre: "",
+    apellidos: "",
     usuario: "",
     contraseña: "",
     confirmarContraseña: "",
     email: "",
     phone: "",
     rol: "",
+    barrio_id: "",
+    representante: ""
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -65,28 +72,46 @@ export default function UserForm({
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [openPasswordModal, setOpenPasswordModal] = useState(false);
+  const [barrios, setBarrios] = useState<Barrio[]>([]);
 
 
   useEffect(() => {
+    const fetchBarrios = async () => {
+        try{
+          const data = await getAllBarrios();
+          setBarrios(data);
+        }catch (error) {
+          console.error("Error al cargar los barrios", error)
+        }
+      };
+
+      fetchBarrios();
+      
     if (user) {
       setFormData({
         nombre: user.nombre ?? "",
+        apellidos: user.apellidos ?? "",
         usuario: user.usuario ?? "",
         contraseña: "",
         confirmarContraseña: "",
         email: user.email ?? "",
         phone: user.phone ?? "",
         rol: user.rol ?? "",
+        barrio_id: user.barrio_id?.toString() ?? "",
+        representante: user.representante ?? ""
       });
     } else {
       setFormData({
         nombre: "",
+        apellidos: "",
         usuario: "",
         contraseña: "",
         confirmarContraseña: "",
         email: "",
         phone: "",
         rol: "",
+        barrio_id: "",
+        representante: ""
       });
     }
     setErrors({});
@@ -103,21 +128,36 @@ export default function UserForm({
     setErrors((prev) => ({ ...prev, rol: "" }));
   };
 
+  const handleBarrioChange = (value: string) => {
+  setFormData((prev) => ({ ...prev, barrio_id: value }));
+};
+
+
   const handleSubmit = async () => {
     const newErrors: Record<string, string> = {};
 
       if (isCreating){
         // Validación previa: campos obligatorios vacíos
         if (!formData.nombre.trim()) newErrors.nombre = "Campo requerido";
+        if (!formData.apellidos.trim()) newErrors.apellidos = "Campo requerido";
         if (!formData.usuario.trim()) newErrors.usuario = "Campo requerido";
         if (!formData.contraseña.trim()) newErrors.contraseña = "Campo requerido";
         if (!formData.rol.trim()) newErrors.rol = "Campo requerido";
         if (!formData.email.trim()) newErrors.email = "Campo requerido";
+        if (!formData.barrio_id.trim()) newErrors.barrio_id = "Campo requerido";
+        if (formData.rol === "Estudiante" && !formData.representante?.trim()) {
+              newErrors.representante = "El campo representante es obligatorio para estudiantes.";
+            }
       }else {
         if (!formData.nombre.trim()) newErrors.nombre = "Campo requerido";
+        if (!formData.apellidos.trim()) newErrors.apellidos = "Campo requerido";
         if (!formData.usuario.trim()) newErrors.usuario = "Campo requerido";
         if (!formData.rol.trim()) newErrors.rol = "Campo requerido";
         if (!formData.email.trim()) newErrors.email = "Campo requerido";
+        if (!formData.barrio_id) newErrors.barrio_id = "Campo requerido";
+        if (formData.rol === "Estudiante" && !formData.representante?.trim()) {
+              newErrors.representante = "El campo representante es obligatorio para estudiantes.";
+            }
       }
 
     if (Object.keys(newErrors).length > 0) {
@@ -144,16 +184,20 @@ export default function UserForm({
         await createUser(validated);
       } else {
         await updateUser(validated, user.id!);
+        console.log(formData)
       }
       toast.success("Usuario guardado exitosamente");
       setFormData({
       nombre: "",
+      apellidos: "",
       usuario: "",
       contraseña: "",
       confirmarContraseña: "",
       email: "",
       phone: "",
       rol: "",
+      barrio_id: "",
+      representante: ""
     })
       onUserSaved?.();
       onClose();
@@ -167,6 +211,7 @@ export default function UserForm({
         setErrors(zodErrors);
         toast.error("Corrige los errores del formulario");
         console.log(zodErrors)
+        console.log(formData)
       } else {
         toast.error("Error inesperado al validar");
       }
@@ -182,9 +227,10 @@ export default function UserForm({
       </DialogTitle>
     </DialogHeader>
 
-    <div className="space-y-4 pt-2">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-4 pt-2">
       {[
         { label: "Nombre", name: "nombre", type: "text", required: true },
+        { label: "Apellidos", name: "apellidos", type: "text", required: true },
         { label: "Usuario", name: "usuario", type: "text", required: true },
         {
           label: "Correo electrónico",
@@ -342,6 +388,66 @@ export default function UserForm({
           <p className="text-xs text-red-500">{errors.rol}</p>
         )}
       </div>
+
+    <div className="space-y-1">
+      <label className="block text-sm font-medium text-muted-foreground">
+        Barrio *
+      </label>
+      <Select value={formData.barrio_id.toString()} onValueChange={handleBarrioChange}>
+        <SelectTrigger
+          className={clsx("w-full", errors.barrio_id && "border-red-500")}
+        >
+          <SelectValue placeholder="Seleccionar barrio" />
+        </SelectTrigger>
+        <SelectContent>
+          {barrios.map((barrio) => (
+            <SelectItem key={barrio.id} value={barrio.id.toString()}>
+              {barrio.nombre}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+      {errors.barrio_id && (
+        <p className="text-xs text-red-500">{errors.barrio_id}</p>
+      )}
+    </div>
+
+    {/* Campo Representante: solo visible si el rol es "Estudiante" */}
+    {formData.rol === "Estudiante" && (
+      <div className="space-y-1">
+        <label className="block text-sm font-medium text-muted-foreground">
+          <div className="flex items-center gap-1">
+            <span>Representante *</span>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Info
+                    size={14}
+                    className="text-muted-foreground cursor-pointer"
+                  />
+                </TooltipTrigger>
+                <TooltipContent side="top">
+                  <p className="max-w-xs text-sm">
+                    Este campo es requerido porque el estudiante es menor de edad.
+                  </p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          </div>
+        </label>
+        <Input
+          name="representante"
+          type="text"
+          value={formData.representante}
+          onChange={handleChange}
+          className={clsx(errors.representante && "border-red-500")}
+        />
+        {errors.representante && (
+          <p className="text-xs text-red-500">{errors.representante}</p>
+        )}
+      </div>
+    )}
+
     </div>
 
     <div className="flex justify-end pt-4">

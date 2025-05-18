@@ -9,6 +9,7 @@ type SortDirection = "asc" | "desc" | null
 
 const columns = [
   { key: "name", label: "Nombre" },
+  { key: "apellidos", label: "Apellido" },
   { key: "user", label: "Usuario" },
   { key: "role", label: "Rol" },
   { key: "email", label: "Correo" },
@@ -114,6 +115,7 @@ export default function UserTable({ users, onEdit, onDelete }: { users: User[]; 
             {paginatedUsers.map(user => (
               <tr key={user.id} className="border-t hover:bg-muted/30">
                 <td className="px-4 py-3">{user.nombre}</td>
+                <td className="px-4 py-3">{user.apellidos}</td>
                 <td className="px-4 py-3">{user.usuario}</td>
                 <td className="px-4 py-3 capitalize">{user.rol}</td>
                 <td className="px-4 py-3">{maskEmail(user.email)}</td>

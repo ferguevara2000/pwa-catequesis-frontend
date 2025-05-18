@@ -1,13 +1,17 @@
+
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export type User = {
     id?: number
     nombre: string
+    apellidos: string
     usuario: string
     rol: string
     contraseña?: string
     email: string
+    barrio_id: number
     phone: string
+    representante?: string
   }
 
 export type Catequista = {
