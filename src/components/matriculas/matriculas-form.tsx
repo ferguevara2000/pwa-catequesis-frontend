@@ -1,46 +1,47 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
-    Dialog,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
-  } from "@/components/ui/dialog";
-  import { Button } from "@/components/ui/button";
-  import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-  } from "@/components/ui/select";
-  import { useEffect, useState } from "react";
-  import { toast } from "sonner";
-  import clsx from "clsx";
-  import { z } from "zod";
-  
-  import { getAllEstudiantes, Estudiante } from "@/services/users";
-  import { getAllCursos } from "@/services/cursos";
-  import { estudianteCursoSchema } from "@/lib/validations/estudiantesCurso";
-  import { createEstudianteCurso, Curso, updateEstudianteCurso, Usuario } from "@/services/estudianteCurso";
-  import { EstudianteMultiSelect } from "../shared/estudianteMultiSelect";
-  
-  type MatriculaFormData = {
-    id?: string;
-    usuario_id: string;
-    curso_id: string;
-    usuario?: Usuario;
-    curso?: Curso;
-    estado: "activo" | "aprobado" | "retirado";
-    estudiante_ids?: string[];
-  };
-  
-// ... tus imports no cambian
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
+import clsx from "clsx";
+import { z } from "zod";
 
-export default function MatriculaForm({
-  open,
-  onClose,
-  onMatriculaSaved,
-  matricula,
-}: {
+import { Estudiante } from "@/services/users";
+import { getAllCursos } from "@/services/cursos";
+import {
+  createEstudianteCurso,
+  Curso,
+  getAllEstudiantesNoMatriculados,
+  updateEstudianteCurso,
+  Usuario,
+} from "@/services/estudianteCurso";
+import { EstudianteMultiSelect } from "../shared/estudianteMultiSelect";
+import { estudianteCursoSchema, estudianteCursoUpdateSchema } from "@/lib/validations/estudiantesCurso";
+import { Input } from "../ui/input";
+
+type MatriculaFormData = {
+  id?: string;
+  usuario_id: string;
+  curso_id: string;
+  usuario?: Usuario;
+  curso?: Curso;
+  estado: "activo" | "aprobado" | "retirado";
+  estudiante_ids?: string[];
+};
+
+export default function MatriculaForm({ open, onClose, onMatriculaSaved, matricula }: {
   open: boolean;
   onClose: () => void;
   onMatriculaSaved?: () => void;
@@ -60,11 +61,11 @@ export default function MatriculaForm({
   const isCreating = !matricula;
 
   useEffect(() => {
-    getAllEstudiantes().then(setEstudiantes);
-    getAllCursos().then(setCursos);
-  }, []);
+    if (open) {
+          getAllEstudiantesNoMatriculados().then(setEstudiantes);
+          getAllCursos().then(setCursos);
+        }
 
-  useEffect(() => {
     if (matricula) {
       setFormData({
         usuario_id: matricula.usuario?.id?.toString() || "",
@@ -81,27 +82,56 @@ export default function MatriculaForm({
       });
     }
     setErrors({});
-  }, [matricula]);
+  }, [open, matricula]);
 
   const handleSubmit = async () => {
     try {
-      const validated = estudianteCursoSchema.parse({
-        ...formData,
-        usuario_id: Number(formData.usuario_id),
-        curso_id: Number(formData.curso_id),
-        estudiante_ids: formData.estudiante_ids,
-      });
-
       if (isCreating) {
-        await createEstudianteCurso(validated);
-      } else {
-        await updateEstudianteCurso(validated, matricula.id!);
-      }
+        // Validar y enviar array (crear múltiples matrículas)
+        if (!formData.estudiante_ids || formData.estudiante_ids.length === 0) {
+          setErrors({ estudiante_ids: "Selecciona al menos un estudiante" });
+          toast.error("Corrige los errores del formulario");
+          return;
+        }
 
-      toast.success(`Matrícula ${isCreating ? "creada" : "actualizada"} exitosamente`);
-      onMatriculaSaved?.();
-      onClose();
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const validatedData = estudianteCursoSchema
+          .omit({ usuario_ids: true })
+          .parse({
+            curso_id: Number(formData.curso_id),
+            estado: formData.estado,
+          });
+
+        const results = await Promise.allSettled(
+          formData.estudiante_ids.map((id) =>
+            createEstudianteCurso({
+              ...validatedData,
+              usuario_ids: [Number(id)],
+            })
+          )
+        );
+
+        const errorsCount = results.filter((r) => r.status === "rejected").length;
+
+        if (errorsCount === 0) {
+          toast.success("Matrículas creadas exitosamente");
+          onMatriculaSaved?.();
+          onClose();
+        } else {
+          toast.error(`Se produjo un error en ${errorsCount} de las matrículas`);
+        }
+      } else {
+
+        const validatedDataUpdate = estudianteCursoUpdateSchema.parse({
+          usuario_id: Number(formData.usuario_id),
+          curso_id: Number(formData.curso_id),
+          estado: formData.estado,
+        });
+
+        await updateEstudianteCurso(validatedDataUpdate, matricula.id!.toString());
+        toast.success("Matrícula actualizada exitosamente");
+        onMatriculaSaved?.();
+        onClose();
+      }
     } catch (err: any) {
       if (err instanceof z.ZodError) {
         const zodErrors: Record<string, string> = {};
@@ -111,8 +141,6 @@ export default function MatriculaForm({
         });
         setErrors(zodErrors);
         toast.error("Corrige los errores del formulario");
-      } else if (err.status === 409) {
-        toast.error("Este estudiante ya está inscrito en este curso.");
       } else {
         toast.error("Error inesperado al guardar la matrícula");
       }
@@ -127,41 +155,36 @@ export default function MatriculaForm({
         </DialogHeader>
 
         <div className="space-y-4 pt-2">
-
-          {/* Estudiante Select (único) */}
-          <div className="space-y-1">
-            <label className="block text-sm font-medium text-muted-foreground">Estudiante *</label>
-            <Select
-              value={formData.usuario_id}
-              onValueChange={(value) => setFormData({ ...formData, usuario_id: value })}
-            >
-              <SelectTrigger className={clsx("w-full", errors.usuario_id && "border-red-500")}>
-                <SelectValue placeholder="Selecciona un estudiante" />
-              </SelectTrigger>
-              <SelectContent>
-                {estudiantes.map((est) => (
-                  <SelectItem key={est.id} value={est.id.toString()}>
-                    {est.nombre}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            {errors.usuario_id && <p className="text-xs text-red-500">{errors.usuario_id}</p>}
-          </div>
-
-          {/* Estudiantes MultiSelect */}
-          <div className="space-y-1">
-            <label className="block text-sm font-medium mb-2">Estudiantes seleccionados</label>
-            <EstudianteMultiSelect
-              fetchEstudiantes={estudiantes}
-              value={formData.estudiante_ids || []}
-              onChange={(ids) => setFormData({ ...formData, estudiante_ids: ids })}
-              placeholder="Seleccionar estudiantes..."
-              emptyMessage="No se encontraron estudiantes para este curso."
-              loadingMessage="Cargando lista de estudiantes..."
-              errorMessage="Error al cargar estudiantes. Intenta de nuevo."
-            />
-          </div>
+          {/* En modo creación: multi-select para estudiantes */}
+          {isCreating ? (
+            <div className="space-y-1">
+              <label className="block text-sm font-medium mb-2">Estudiantes seleccionados *</label>
+              <EstudianteMultiSelect
+                estudiantes={estudiantes}
+                onChange={(seleccionados) =>
+                  setFormData({
+                    ...formData,
+                    estudiante_ids: seleccionados.map((e) => e.id.toString()),
+                  })
+                }
+                placeholder="Seleccionar estudiantes..."
+                emptyMessage="No se encontraron estudiantes no matriculados."
+              />
+              {errors.estudiante_ids && (
+                <p className="text-xs text-red-500">{errors.estudiante_ids}</p>
+              )}
+            </div>
+          ) : (
+            // En modo edición: mostrar solo el estudiante bloqueado en un label o input readonly
+            <div className="space-y-1">
+              <label className="block text-sm font-medium mb-2">Estudiante</label>
+              <Input
+                value={matricula?.usuario?.nombre || "Estudiante no encontrado"}
+                disabled
+                className="bg-muted cursor-not-allowed"
+              />
+            </div>
+          )}
 
           {/* Curso Select */}
           <div className="space-y-1">
@@ -189,7 +212,9 @@ export default function MatriculaForm({
             <label className="block text-sm font-medium text-muted-foreground">Estado *</label>
             <Select
               value={formData.estado}
-              onValueChange={(value) => setFormData({ ...formData, estado: value as MatriculaFormData["estado"] })}
+              onValueChange={(value) =>
+                setFormData({ ...formData, estado: value as MatriculaFormData["estado"] })
+              }
             >
               <SelectTrigger className={clsx("w-full", errors.estado && "border-red-500")}>
                 <SelectValue placeholder="Selecciona un estado" />

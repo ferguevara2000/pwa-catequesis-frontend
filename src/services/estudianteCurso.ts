@@ -1,3 +1,5 @@
+import { Estudiante } from "./users";
+
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export type Usuario = {
@@ -21,6 +23,12 @@ export type estudianteCurso = {
 
   export type estudianteCursoDTO = {
     estado: string
+    usuario_ids: number[]
+    curso_id: number
+  }
+
+  export type estudianteCursoUpdateDTO = {
+    estado: string
     usuario_id: number
     curso_id: number
   }
@@ -37,6 +45,16 @@ export type estudianteCurso = {
 
   export async function getAllEstudiantesByCursoId(id: string): Promise<estudianteCurso[]> {
     const response = await fetch(`${API_URL}/estudiantesCurso/curso/${id}`)
+  
+    if (!response.ok) {
+      throw new Error("Error al obtener los estudiantes")
+    }
+  
+    return response.json()
+  }
+
+  export async function getAllEstudiantesNoMatriculados(): Promise<Estudiante[]> {
+    const response = await fetch(`${API_URL}/estudiantesCurso/estudiantes`)
   
     if (!response.ok) {
       throw new Error("Error al obtener los estudiantes")
@@ -69,7 +87,7 @@ export type estudianteCurso = {
   }
   
 
-  export async function updateEstudianteCurso(data: estudianteCursoDTO, id: string) {
+  export async function updateEstudianteCurso(data: estudianteCursoUpdateDTO, id: string) {
     const res = await fetch(`${API_URL}/estudiantesCurso/${id}`, {
       method: "PUT",
       headers: {
