@@ -49,10 +49,19 @@ export default function ConfirmacionManagement({ formOpen, onCloseForm, selected
     }
   };
 
+  const formatFechaBonita = (value: string | Date) => {
+    const date = new Date(value)
+    const day = date.getDate()
+    const month = date.toLocaleString("es-ES", { month: "long" })
+    const year = date.getFullYear()
+    return `${day}, ${month} ${year}`
+  }
+
+
   return (
     <>
       <ConfirmacionForm open={formOpen} onClose={handleClose} confirmacion={selectedConfirmacion} />
-      <GenericTable<Confirmacion> data={Confirmacion} columns={ConfirmacionColumns} searchableKeys={["nombres", "apellidos", "fecha"]as (keyof Confirmacion)[]} onEdit={onEdit} onDelete={handleDelete} />
+      <GenericTable<Confirmacion> data={Confirmacion} columns={ConfirmacionColumns} searchableKeys={["nombres", "apellidos", "fecha"]as (keyof Confirmacion)[]} customRender={{fecha: (value) => formatFechaBonita(value)}} onEdit={onEdit} onDelete={handleDelete} />
     </>
   )
 }

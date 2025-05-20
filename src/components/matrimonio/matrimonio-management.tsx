@@ -51,10 +51,19 @@ export default function MatrimonioManagement({ formOpen, onCloseForm, selectedMa
     }
   };
 
+  const formatFechaBonita = (value: string | Date) => {
+    const date = new Date(value)
+    const day = date.getDate()
+    const month = date.toLocaleString("es-ES", { month: "long" })
+    const year = date.getFullYear()
+    return `${day}, ${month} ${year}`
+  }
+
+
   return (
     <>
       <MatrimonioForm open={formOpen} onClose={handleClose} matrimonio={selectedMatrimonio} />
-      <GenericTable<Matrimonio> data={matrimonio} columns={matrimonioColumns} searchableKeys={["nombre_novio", "apellidos_novio", "nombre_novia", "apellidos_novia", "fecha"]as (keyof Matrimonio)[]} onEdit={onEdit} onDelete={handleDelete} />
+      <GenericTable<Matrimonio> data={matrimonio} columns={matrimonioColumns} searchableKeys={["nombre_novio", "apellidos_novio", "nombre_novia", "apellidos_novia", "fecha"]as (keyof Matrimonio)[]} customRender={{fecha_matrimonio: (value) => formatFechaBonita(value)}} onEdit={onEdit} onDelete={handleDelete} />
     </>
   )
 }

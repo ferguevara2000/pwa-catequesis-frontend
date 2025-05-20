@@ -11,6 +11,15 @@ interface Props {
   onEdit: (comunicacion: Comunicacion) => void
 }
 
+const formatFechaBonita = (value: string | Date) => {
+  const date = new Date(value)
+  const day = date.getDate()
+  const month = date.toLocaleString("es-ES", { month: "long" })
+  const year = date.getFullYear()
+  return `${day}, ${month} ${year}`
+}
+
+
 const ComunicacionColumns: Column<Comunicacion>[] = [
     { key: "titulo", label: "Titulo" },
     { key: "dirigido_a", label: "Dirigido A"},
@@ -52,7 +61,7 @@ export default function ComunicacionManagement({ formOpen, onCloseForm, selected
   return (
     <>
       <ComunicacionForm open={formOpen} onClose={handleClose} comunicacion={selectedComunicacions} />
-      <GenericTable<Comunicacion> data={comunicacion} columns={ComunicacionColumns} searchableKeys={["titulo", "dirigido_a", "fecha"]as (keyof Comunicacion)[]} onEdit={onEdit} onDelete={handleDelete} />
+      <GenericTable<Comunicacion> data={comunicacion} columns={ComunicacionColumns} searchableKeys={["titulo", "dirigido_a", "fecha"]as (keyof Comunicacion)[]} customRender={{fecha: (value) => formatFechaBonita(value)}} onEdit={onEdit} onDelete={handleDelete} />
     </>
   )
 }

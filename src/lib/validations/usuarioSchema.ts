@@ -41,20 +41,23 @@ export const usuarioSchema = z.object({
       message: "El número de teléfono debe tener exactamente 10 dígitos",
     }),
 
-  rol: z.enum(["Administrador", "Catequista", "Estudiante"], {
+  rol: z.enum(["Administrador", "Catequista", "Estudiante", "Tesorero", "Parroco"], {
     errorMap: () => ({ message: "Rol inválido" }),
   }),
 
   barrio_id: z.string({ invalid_type_error: "El barrio es obligatorio" }).transform(val => Number(val)),
 
   representante: z
-    .string()
-    .trim()
-    .min(3, { message: "El representante debe tener al menos 3 caracteres" })
-    .max(100, { message: "El representante es demasiado largo" })
-    .regex(/^[A-Za-zÁÉÍÓÚáéíóúñÑ\s]+$/, {
-      message: "El representante solo debe contener letras y espacios",
-    }).optional(),
+  .string()
+  .trim()
+  .transform((val) => val === "" ? undefined : val)
+  .optional()
+  .refine((val) => val === undefined || val.length >= 3, {
+    message: "El representante debe tener al menos 3 caracteres",
+  })
+  .refine((val) => val === undefined || /^[A-Za-zÁÉÍÓÚáéíóúñÑ\s]+$/.test(val), {
+    message: "El representante solo debe contener letras y espacios",
+  }),
 
   contraseña: z
     .string()
@@ -111,14 +114,17 @@ export const usuarioSchemaUpdate = z.object({
 
   barrio_id: z.string({ invalid_type_error: "El barrio es obligatorio" }).transform(val => Number(val)),
 
-  representante: z
-    .string()
-    .trim()
-    .min(3, { message: "El representante debe tener al menos 3 caracteres" })
-    .max(100, { message: "El representante es demasiado largo" })
-    .regex(/^[A-Za-zÁÉÍÓÚáéíóúñÑ\s]+$/, {
-      message: "El representante solo debe contener letras y espacios",
-    }).optional(),
+representante: z
+  .string()
+  .trim()
+  .transform((val) => val === "" ? undefined : val)
+  .optional()
+  .refine((val) => val === undefined || val.length >= 3, {
+    message: "El representante debe tener al menos 3 caracteres",
+  })
+  .refine((val) => val === undefined || /^[A-Za-zÁÉÍÓÚáéíóúñÑ\s]+$/.test(val), {
+    message: "El representante solo debe contener letras y espacios",
+  }),
 
   rol: z.enum(["Administrador", "Catequista", "Estudiante", "Parroco", "Tesorero"], {
     errorMap: () => ({ message: "Rol inválido" }),

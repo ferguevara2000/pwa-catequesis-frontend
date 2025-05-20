@@ -38,6 +38,15 @@ export default function BautismoManagement({ formOpen, onCloseForm, selectedBaut
     fetchUsers() // recarga usuarios después de cerrar el form
   }
 
+  const formatFechaBonita = (value: string | Date) => {
+    const date = new Date(value)
+    const day = date.getDate()
+    const month = date.toLocaleString("es-ES", { month: "long" })
+    const year = date.getFullYear()
+    return `${day}, ${month} ${year}`
+  }
+
+
   const handleDelete = async (bautismo: Bautismo) => {
     try {
       await deleteBautismo(bautismo.id!.toString());
@@ -52,7 +61,7 @@ export default function BautismoManagement({ formOpen, onCloseForm, selectedBaut
   return (
     <>
       <BautismoForm open={formOpen} onClose={handleClose} bautismo={selectedBautismos} />
-      <GenericTable<Bautismo> data={bautismo} columns={bautismoColumns} searchableKeys={["nombres", "apellidos", "partida", "fecha"]as (keyof Bautismo)[]} onEdit={onEdit} onDelete={handleDelete} />
+      <GenericTable<Bautismo> data={bautismo} columns={bautismoColumns} searchableKeys={["nombres", "apellidos", "partida", "fecha"]as (keyof Bautismo)[]} customRender={{fecha_bautismo: (value) => formatFechaBonita(value)}} onEdit={onEdit} onDelete={handleDelete} />
     </>
   )
 }

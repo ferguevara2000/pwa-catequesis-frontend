@@ -9,6 +9,15 @@ export type Finanza = {
     actualizado_en: string,
     barrios?: Barrio,
     barrio_nombre?: string
+    tesorero: Tesorero
+}
+
+export type Tesorero = {
+  id: number,
+  nombre: string,
+  apellidos: string,
+  barrio_id: number,
+  rol: string
 }
 
 export type Barrio = {

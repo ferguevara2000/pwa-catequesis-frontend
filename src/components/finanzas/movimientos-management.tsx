@@ -57,10 +57,19 @@ export default function MovimientoManagement({ formOpen, onCloseForm, selectedMo
     }
   };
 
+  const formatFechaBonita = (value: string | Date) => {
+    const date = new Date(value)
+    const day = date.getDate()
+    const month = date.toLocaleString("es-ES", { month: "long" })
+    const year = date.getFullYear()
+    return `${day}, ${month} ${year}`
+  }
+
+
   return (
     <>
       <MovimientoForm open={formOpen} onClose={handleClose} movimiento={selectedMovimiento} />
-      <GenericTable<Movimiento> data={movimiento} columns={MovimientoColumns} searchableKeys={["finanza_nombre", "tipo", "fecha"]as (keyof Movimiento)[]} onEdit={onEdit} onDelete={handleDelete} />
+      <GenericTable<Movimiento> data={movimiento} columns={MovimientoColumns} searchableKeys={["finanza_nombre", "tipo", "fecha"]as (keyof Movimiento)[]} customRender={{fecha: (value) => formatFechaBonita(value)}} onEdit={onEdit} onDelete={handleDelete} />
     </>
   )
 }

@@ -1,8 +1,8 @@
-import { toast } from "sonner"
 import { useEffect, useState } from "react"
-import GenericTable, { Column } from "../shared/generic-table"
-import { Finanza, deleteFinanza, getAllFinanzas } from "@/services/finanzas"
+import { Column } from "../shared/generic-table"
+import { Finanza, getAllFinanzas } from "@/services/finanzas"
 import FinanzaForm from "./finanzas-form"
+import FinanzasTable from "./finanzas-table"
 
 interface Props {
   formOpen: boolean
@@ -34,6 +34,15 @@ export default function FinanzaManagement({ formOpen, onCloseForm, selectedFinan
       console.error("Error al cargar el Finanza:", error);
     }
   };
+
+  const formatFechaBonita = (value: string | Date) => {
+    const date = new Date(value)
+    const day = date.getDate()
+    const month = date.toLocaleString("es-ES", { month: "long" })
+    const year = date.getFullYear()
+    return `${day}, ${month} ${year}`
+  }
+
   
 
   useEffect(() => {
@@ -45,21 +54,10 @@ export default function FinanzaManagement({ formOpen, onCloseForm, selectedFinan
     fetchData() // recarga usuarios después de cerrar el form
   }
 
-  const handleDelete = async (Finanza: Finanza) => {
-    try {
-      await deleteFinanza(Finanza.id!.toString());
-      toast.success("Finanza eliminado correctamente");
-      fetchData(); // 🔁 recargar tabla
-    } catch (error) {
-      toast.error("Error al eliminar el Finanza");
-      console.error(error);
-    }
-  };
-
   return (
     <>
       <FinanzaForm open={formOpen} onClose={handleClose} finanza={selectedFinanza} />
-      <GenericTable<Finanza> data={Finanza} columns={FinanzaColumns} searchableKeys={["barrio_id", "actualizado_en"]as (keyof Finanza)[]} onEdit={onEdit} onDelete={handleDelete} />
+      <FinanzasTable<Finanza> data={Finanza} columns={FinanzaColumns} searchableKeys={["barrio_id", "actualizado_en"]as (keyof Finanza)[]} customRender={{actualizado_en: (value) => formatFechaBonita(value)}} onView={onEdit} />
     </>
   )
 }

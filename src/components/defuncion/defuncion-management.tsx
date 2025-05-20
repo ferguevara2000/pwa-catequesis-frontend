@@ -49,10 +49,19 @@ export default function DefuncionManagement({ formOpen, onCloseForm, selectedDef
     }
   };
 
+  const formatFechaBonita = (value: string | Date) => {
+    const date = new Date(value)
+    const day = date.getDate()
+    const month = date.toLocaleString("es-ES", { month: "long" })
+    const year = date.getFullYear()
+    return `${day}, ${month} ${year}`
+  }
+
+
   return (
     <>
       <DefuncionForm open={formOpen} onClose={handleClose} defuncion={selectedDefuncion} />
-      <GenericTable<Defuncion> data={defuncion} columns={DefuncionColumns} searchableKeys={["nombres", "apellidos", "fecha_defuncion"]as (keyof Defuncion)[]} onEdit={onEdit} onDelete={handleDelete} />
+      <GenericTable<Defuncion> data={defuncion} columns={DefuncionColumns} searchableKeys={["nombres", "apellidos", "fecha_defuncion"]as (keyof Defuncion)[]} customRender={{fecha_defuncion: (value) => formatFechaBonita(value)}} onEdit={onEdit} onDelete={handleDelete} />
     </>
   )
 }

@@ -49,10 +49,19 @@ export default function ComunionManagement({ formOpen, onCloseForm, selectedComu
     }
   };
 
+  const formatFechaBonita = (value: string | Date) => {
+    const date = new Date(value)
+    const day = date.getDate()
+    const month = date.toLocaleString("es-ES", { month: "long" })
+    const year = date.getFullYear()
+    return `${day}, ${month} ${year}`
+  }
+
+
   return (
     <>
       <ComunionForm open={formOpen} onClose={handleClose} comunion={selectedComunion} />
-      <GenericTable<Comunion> data={Comunion} columns={ComunionColumns} searchableKeys={["nombres", "apellidos", "fecha"]as (keyof Comunion)[]} onEdit={onEdit} onDelete={handleDelete} />
+      <GenericTable<Comunion> data={Comunion} columns={ComunionColumns} searchableKeys={["nombres", "apellidos", "fecha"]as (keyof Comunion)[]} customRender={{fecha: (value) => formatFechaBonita(value)}} onEdit={onEdit} onDelete={handleDelete} />
     </>
   )
 }
