@@ -50,13 +50,16 @@ import {
     const isCreating = !comunicacion;
   
     useEffect(() => {
+      const user = JSON.parse(localStorage.getItem("user") || "{}");
+      const enviadoPor = `${user?.nombre} ${user?.apellidos}` || "";
+
       if (comunicacion) {
         setFormData({
           titulo: comunicacion.titulo ?? "",
           mensaje: comunicacion.mensaje ?? "",
           dirigido_a: comunicacion.dirigido_a ?? [],
           fecha: comunicacion.fecha?.slice(0, 10) ?? "",
-          enviado_por: comunicacion.enviado_por ?? "",
+          enviado_por: enviadoPor,
         });
       } else {
         setFormData({
@@ -64,11 +67,12 @@ import {
           mensaje: "",
           dirigido_a: [],
           fecha: "",
-          enviado_por: "",
+          enviado_por: enviadoPor,
         });
       }
+
       setErrors({});
-    }, [comunicacion]);
+    }, [comunicacion, open]);
   
     const handleChange = (
       e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -188,7 +192,7 @@ import {
               <Input
                 name="enviado_por"
                 value={formData.enviado_por}
-                onChange={handleChange}
+                readOnly
                 className={clsx(errors.enviado_por && "border-red-500")}
               />
               {errors.enviado_por && (
