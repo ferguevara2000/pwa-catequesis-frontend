@@ -82,17 +82,35 @@ import {
       setErrors((prev) => ({ ...prev, [name]: "" }));
     };
   
-    const toggleDirigidoA = (item: string) => {
+    const toggleDirigidoA = (opcion: string) => {
       setFormData((prev) => {
-        const exists = prev.dirigido_a.includes(item);
+        let nuevoDirigidoA = [...prev.dirigido_a]
+
+        if (opcion === "Todos") {
+          // Si ya está seleccionado "Todos", lo deselecciona
+          if (nuevoDirigidoA.includes("Todos")) {
+            nuevoDirigidoA = []
+          } else {
+            // Si se selecciona "Todos", elimina las demás opciones
+            nuevoDirigidoA = ["Todos"]
+          }
+        } else {
+          // Si "Todos" está seleccionado, no se puede seleccionar otra opción
+          if (nuevoDirigidoA.includes("Todos")) return prev
+
+          if (nuevoDirigidoA.includes(opcion)) {
+            nuevoDirigidoA = nuevoDirigidoA.filter((item) => item !== opcion)
+          } else {
+            nuevoDirigidoA.push(opcion)
+          }
+        }
+
         return {
           ...prev,
-          dirigido_a: exists
-            ? prev.dirigido_a.filter((i) => i !== item)
-            : [...prev.dirigido_a, item],
-        };
-      });
-    };
+          dirigido_a: nuevoDirigidoA,
+        }
+      })
+    }
   
     const handleSubmit = async () => {
       try {

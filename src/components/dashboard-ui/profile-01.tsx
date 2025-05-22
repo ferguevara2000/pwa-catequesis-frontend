@@ -58,7 +58,7 @@ export default function Profile01({
   const menuItems: MenuItem[] = [
     {
       label: "Configuración de la cuenta",
-      href: "#",
+      href: "/dashboard/user-config",
       icon: <Settings className="w-4 h-4" />,
     },
   ]

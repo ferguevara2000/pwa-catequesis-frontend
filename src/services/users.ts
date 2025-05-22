@@ -9,7 +9,7 @@ export type User = {
     rol: string
     contraseña?: string
     email: string
-    barrio_id: number
+    barrio_id?: number
     phone: string
     representante?: string
   }
@@ -26,6 +26,16 @@ export type Estudiante = {
   
   export async function getAllUsers(): Promise<User[]> {
     const response = await fetch(`${API_URL}/usuarios`)
+  
+    if (!response.ok) {
+      throw new Error("Error al obtener usuarios")
+    }
+  
+    return response.json()
+  }
+
+  export async function getUserById(id: string): Promise<User> {
+    const response = await fetch(`${API_URL}/usuarios/${id}`)
   
     if (!response.ok) {
       throw new Error("Error al obtener usuarios")
@@ -82,7 +92,7 @@ export type Estudiante = {
   
     if (!res.ok) {
       const errorData = await res.json()
-      throw new Error(errorData.message || "Error al crear el usuario")
+      throw new Error(errorData.message || "Error al actualizar el usuario")
     }
   
     return await res.json()
@@ -111,6 +121,39 @@ export type Estudiante = {
       throw new Error("No se pudo actualizar la contraseña");
     }
   }
+
+  export async function actualizarContraseña(id: string, contraseña_actual: string, nueva_contraseña: string) {
+  try {
+    const response = await fetch(`${API_URL}/usuarios/${id}/userpassword`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        contraseña_actual,
+        nueva_contraseña,
+      }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      if (data.code === 'CONTRASEÑA_INCORRECTA') {
+        console.error('Contraseña actual incorrecta');
+        return { success: false, message: 'La contraseña actual es incorrecta' };
+      } else {
+        console.error('Error:', data.error);
+        return { success: false, message: 'Error al actualizar la contraseña' };
+      }
+    }
+
+    return { success: true, message: 'Contraseña actualizada correctamente' };
+  } catch (error) {
+    console.error('Error de red:', error);
+    return { success: false, message: 'Error en el servidor' };
+  }
+}
+
   
   
   

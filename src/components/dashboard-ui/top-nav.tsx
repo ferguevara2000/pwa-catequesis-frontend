@@ -3,10 +3,11 @@
 import { usePathname } from "next/navigation"
 import Link from "next/link"
 import Image from "next/image"
-import { ChevronRight, Bell } from "lucide-react"
+import { ChevronRight } from "lucide-react"
 import Profile01 from "./profile-01"
 import { ThemeToggle } from "../theme-toggle"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { NotificationPanel } from "./notificacion-panel"
 
 interface BreadcrumbItem {
   label: string
@@ -47,12 +48,7 @@ export default function TopNav() {
       </div>
 
       <div className="flex items-center gap-2 sm:gap-4 ml-auto sm:ml-0">
-        <button
-          type="button"
-          className="p-1.5 sm:p-2 hover:bg-gray-100 dark:hover:bg-[#1F1F23] rounded-full transition-colors"
-        >
-          <Bell className="h-4 w-4 sm:h-5 sm:w-5 text-gray-600 dark:text-gray-300" />
-        </button>
+        <NotificationPanel />
 
         <ThemeToggle />
 
