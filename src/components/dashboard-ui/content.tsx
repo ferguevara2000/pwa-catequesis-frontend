@@ -1,40 +1,45 @@
-import { Calendar, CreditCard, Wallet } from "lucide-react"
-import List01 from "./list-01"
-import List02 from "./list-02"
-import List03 from "./list-03"
+"use client"
+import { useEffect, useState } from "react"
+import AdminPanel from "./admin-panel"
 
 export default function Content() {
-  return (
-    <h2>Dashboard</h2>
-    // <div className="space-y-4">
-    //   <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-    //     <div className="bg-white dark:bg-[#0F0F12] rounded-xl p-6 flex flex-col border border-gray-200 dark:border-[#1F1F23]">
-    //       <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-4 text-left flex items-center gap-2 ">
-    //         <Wallet className="w-3.5 h-3.5 text-zinc-900 dark:text-zinc-50" />
-    //         Accounts
-    //       </h2>
-    //       <div className="flex-1">
-    //         <List01 className="h-full" />
-    //       </div>
-    //     </div>
-    //     <div className="bg-white dark:bg-[#0F0F12] rounded-xl p-6 flex flex-col border border-gray-200 dark:border-[#1F1F23]">
-    //       <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-4 text-left flex items-center gap-2">
-    //         <CreditCard className="w-3.5 h-3.5 text-zinc-900 dark:text-zinc-50" />
-    //         Recent Transactions
-    //       </h2>
-    //       <div className="flex-1">
-    //         <List02 className="h-full" />
-    //       </div>
-    //     </div>
-    //   </div>
+  const [role, setRole] = useState<string>("")
+  const [username, setUsername] = useState<string>("")
 
-    //   <div className="bg-white dark:bg-[#0F0F12] rounded-xl p-6 flex flex-col items-start justify-start border border-gray-200 dark:border-[#1F1F23]">
-    //     <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-4 text-left flex items-center gap-2">
-    //       <Calendar className="w-3.5 h-3.5 text-zinc-900 dark:text-zinc-50" />
-    //       Upcoming Events
-    //     </h2>
-    //     <List03 />
-    //   </div>
-    // </div>
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user")
+    if (storedUser) {
+      const user = JSON.parse(storedUser)
+      setRole(user?.rol || "guest")
+      setUsername(user?.nombre + " " + user.apellidos)
+    }
+  }, [])
+
+  if (!role) {
+    return <p className="text-gray-600 dark:text-gray-300">Cargando...</p>
+  }
+
+  if (role === "Administrador") {
+    return (
+      <div className="space-y-4">
+        <AdminPanel userName={username}/>
+      </div>
+    )
+  }
+
+  if (role === "Usuario") {
+    return (
+      <div>
+        <h2 className="text-xl font-bold text-gray-900 dark:text-white">Dashboard Usuario</h2>
+        <p className="text-gray-600 dark:text-gray-300">Bienvenido a tu panel de usuario.</p>
+      </div>
+    )
+  }
+
+  return (
+    <div>
+      <h2 className="text-xl font-bold text-gray-900 dark:text-white">Dashboard</h2>
+      <p className="text-gray-600 dark:text-gray-300">No tienes permisos para ver este panel.</p>
+    </div>
   )
 }
