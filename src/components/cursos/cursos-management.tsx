@@ -10,6 +10,7 @@ interface Props {
   onCloseForm: () => void
   selectedCursos?: Curso
   onEdit: (curso: Curso) => void
+  onDataReady?: (data: Curso[]) => void
 }
 
 const cursoColumns: Column<Curso>[] = [
@@ -18,7 +19,7 @@ const cursoColumns: Column<Curso>[] = [
     { key: "horario", label: "Horario" },
   ]
 
-export default function CursosManagement({ formOpen, onCloseForm, selectedCursos, onEdit }: Props) {
+export default function CursosManagement({ formOpen, onCloseForm, selectedCursos, onEdit, onDataReady }: Props) {
   const [cursos, setCursos] = useState<Curso[]>([])
 
   const fetchUsers = async () => {
@@ -33,6 +34,10 @@ export default function CursosManagement({ formOpen, onCloseForm, selectedCursos
       console.error("Error al cargar el curso:", error)
     }
   }
+
+  useEffect(() => {
+    onDataReady?.(cursos) // tablaDatos es tu array de cursos actuales
+  }, [cursos, onDataReady])
 
   useEffect(() => {
     fetchUsers()
