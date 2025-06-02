@@ -1,14 +1,15 @@
 import { toast } from "sonner"
 import { useEffect, useState } from "react"
-import GenericTable, { Column } from "../shared/generic-table"
 import { deleteMatrimonio, getAllMatrimonios, Matrimonio } from "@/services/matrimonio"
 import MatrimonioForm from "./matrimonio-form"
+import TableSacraments, { Column } from "../shared/table-sacraments"
 
 interface Props {
   formOpen: boolean
   onCloseForm: () => void
   selectedMatrimonio?: Matrimonio
   onEdit: (matrimonio: Matrimonio) => void
+  onGenerarCertificado: () => void
 }
 
 const matrimonioColumns: Column<Matrimonio>[] = [
@@ -19,7 +20,7 @@ const matrimonioColumns: Column<Matrimonio>[] = [
     { key: "fecha_matrimonio", label: "Fecha" }
   ]
 
-export default function MatrimonioManagement({ formOpen, onCloseForm, selectedMatrimonio, onEdit }: Props) {
+export default function MatrimonioManagement({ formOpen, onCloseForm, selectedMatrimonio, onEdit, onGenerarCertificado }: Props) {
   const [matrimonio, setMatrimonio] = useState<Matrimonio[]>([])
 
   const fetchMatrimonios = async () => {
@@ -63,7 +64,7 @@ export default function MatrimonioManagement({ formOpen, onCloseForm, selectedMa
   return (
     <>
       <MatrimonioForm open={formOpen} onClose={handleClose} matrimonio={selectedMatrimonio} />
-      <GenericTable<Matrimonio> data={matrimonio} columns={matrimonioColumns} searchableKeys={["nombre_novio", "apellidos_novio", "nombre_novia", "apellidos_novia", "fecha"]as (keyof Matrimonio)[]} customRender={{fecha_matrimonio: (value) => formatFechaBonita(value)}} onEdit={onEdit} onDelete={handleDelete} />
+      <TableSacraments<Matrimonio> data={matrimonio} columns={matrimonioColumns} searchableKeys={["nombre_novio", "apellidos_novio", "nombre_novia", "apellidos_novia", "fecha"]as (keyof Matrimonio)[]} customRender={{fecha_matrimonio: (value) => formatFechaBonita(value)}} onEdit={onEdit} onDelete={handleDelete} onGenerarCertificado={onGenerarCertificado} />
     </>
   )
 }

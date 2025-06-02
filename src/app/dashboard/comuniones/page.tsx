@@ -6,9 +6,11 @@ import { Button } from "@/components/ui/button"
 import { Plus } from "lucide-react"
 import { Comunion } from "@/services/comunion"
 import ComunionManagement from "@/components/comunion/comunion-management"
+import GenerarCertificadoGlobal from "@/components/certificates/global-certificate"
 
 export default function ComunionPage() {
   const [formOpen, setFormOpen] = useState(false)
+  const [showModal, setShowModal] = useState(false)
   const [selectedComunion, setSelectedComunion] = useState<Comunion | undefined>()
 
   const handleCreate = () => {
@@ -20,6 +22,10 @@ export default function ComunionPage() {
     setSelectedComunion(comunion)
     setFormOpen(true)
   }
+
+  const handleCertificate = () => {
+      setShowModal(true)
+    }
 
   return (
     <RoleProtectedRoute allowedRoles={["Administrador"]}>
@@ -40,7 +46,14 @@ export default function ComunionPage() {
           }}
           selectedComunion={selectedComunion}
           onEdit={handleEdit}
+          onGenerarCertificado={handleCertificate}
         />
+
+        <GenerarCertificadoGlobal
+                    titulo="de Primera Comunión"
+                    open={showModal}
+                    onOpenChange={setShowModal}
+                  />
       </div>
     </RoleProtectedRoute>
   )

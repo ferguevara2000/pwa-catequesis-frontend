@@ -1,23 +1,30 @@
 import { toast } from "sonner"
 import { useEffect, useState } from "react"
-import GenericTable, { Column } from "../shared/generic-table"
 import { Bautismo, deleteBautismo, getAllBautismos } from "@/services/bautismos"
 import BautismoForm from "./bautismo-form"
+import TableSacraments, { Column } from "../shared/table-sacraments"
 
 interface Props {
   formOpen: boolean
   onCloseForm: () => void
   selectedBautismos?: Bautismo
   onEdit: (bautismo: Bautismo) => void
+  onGenerarCertificado: (bautismo: Bautismo) => void
 }
 
 const bautismoColumns: Column<Bautismo>[] = [
-    { key: "nombres", label: "Nombres" },
-    { key: "apellidos", label: "Apellidos"},
-    { key: "fecha_bautismo", label: "Fecha" }
-  ]
+  { key: "nombres", label: "Nombres" },
+  { key: "apellidos", label: "Apellidos" },
+  { key: "fecha_bautismo", label: "Fecha" }
+]
 
-export default function BautismoManagement({ formOpen, onCloseForm, selectedBautismos, onEdit }: Props) {
+export default function BautismoManagement({
+  formOpen,
+  onCloseForm,
+  selectedBautismos,
+  onEdit,
+  onGenerarCertificado
+}: Props) {
   const [bautismo, setBautismo] = useState<Bautismo[]>([])
 
   const fetchUsers = async () => {
@@ -35,7 +42,18 @@ export default function BautismoManagement({ formOpen, onCloseForm, selectedBaut
 
   const handleClose = () => {
     onCloseForm()
-    fetchUsers() // recarga usuarios después de cerrar el form
+    fetchUsers()
+  }
+
+  const handleDelete = async (bautismo: Bautismo) => {
+    try {
+      await deleteBautismo(bautismo.id!.toString())
+      toast.success("Bautismo eliminado correctamente")
+      fetchUsers()
+    } catch (error) {
+      toast.error("Error al eliminar el bautismo")
+      console.error(error)
+    }
   }
 
   const formatFechaBonita = (value: string | Date) => {
@@ -46,22 +64,18 @@ export default function BautismoManagement({ formOpen, onCloseForm, selectedBaut
     return `${day}, ${month} ${year}`
   }
 
-
-  const handleDelete = async (bautismo: Bautismo) => {
-    try {
-      await deleteBautismo(bautismo.id!.toString());
-      toast.success("bautismo eliminado correctamente");
-      fetchUsers(); // 🔁 recargar tabla
-    } catch (error) {
-      toast.error("Error al eliminar el bautismo");
-      console.error(error);
-    }
-  };
-
   return (
     <>
       <BautismoForm open={formOpen} onClose={handleClose} bautismo={selectedBautismos} />
-      <GenericTable<Bautismo> data={bautismo} columns={bautismoColumns} searchableKeys={["nombres", "apellidos", "partida", "fecha"]as (keyof Bautismo)[]} customRender={{fecha_bautismo: (value) => formatFechaBonita(value)}} onEdit={onEdit} onDelete={handleDelete} />
+      <TableSacraments<Bautismo>
+        data={bautismo}
+        columns={bautismoColumns}
+        searchableKeys={["nombres", "apellidos", "partida", "fecha"] as (keyof Bautismo)[]}
+        customRender={{ fecha_bautismo: (value) => formatFechaBonita(value) }}
+        onEdit={onEdit}
+        onDelete={handleDelete}
+        onGenerarCertificado={onGenerarCertificado}
+      />
     </>
   )
 }

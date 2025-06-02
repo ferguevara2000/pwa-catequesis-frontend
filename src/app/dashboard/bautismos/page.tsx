@@ -6,9 +6,11 @@ import BautismoManagement from "@/components/bautismo/bautismo-management"
 import { Bautismo } from "@/services/bautismos"
 import { Button } from "@/components/ui/button"
 import { Plus } from "lucide-react"
+import GenerarCertificadoModal from "@/components/certificates/bautismo-certificate"
 
 export default function BautismoPage() {
   const [formOpen, setFormOpen] = useState(false)
+  const [showModal, setShowModal] = useState(false)
   const [selectedBautismo, setSelectedBautismo] = useState<Bautismo | undefined>()
 
   const handleCreate = () => {
@@ -17,9 +19,13 @@ export default function BautismoPage() {
   }
 
   const handleEdit = (bautismo: Bautismo) => {
-    console.log(bautismo)
     setSelectedBautismo(bautismo)
     setFormOpen(true)
+  }
+
+  const handleCertificate = (bautismo: Bautismo) => {
+    setSelectedBautismo(bautismo)
+    setShowModal(true)
   }
 
   return (
@@ -41,7 +47,16 @@ export default function BautismoPage() {
           }}
           selectedBautismos={selectedBautismo}
           onEdit={handleEdit}
+          onGenerarCertificado={handleCertificate}
         />
+
+        {selectedBautismo && (
+          <GenerarCertificadoModal
+            item={selectedBautismo}
+            open={showModal}
+            onOpenChange={setShowModal}
+          />
+        )}
       </div>
     </RoleProtectedRoute>
   )

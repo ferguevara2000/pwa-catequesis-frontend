@@ -1,14 +1,15 @@
 import { toast } from "sonner"
 import { useEffect, useState } from "react"
-import GenericTable, { Column } from "../shared/generic-table"
 import { Comunion, deleteComunion, getAllComuniones } from "@/services/comunion"
 import ComunionForm from "./comunion-form"
+import TableSacraments, { Column } from "../shared/table-sacraments"
 
 interface Props {
   formOpen: boolean
   onCloseForm: () => void
   selectedComunion?: Comunion
   onEdit: (Comunion: Comunion) => void
+  onGenerarCertificado: () => void
 }
 
 const ComunionColumns: Column<Comunion>[] = [
@@ -17,7 +18,7 @@ const ComunionColumns: Column<Comunion>[] = [
     { key: "fecha", label: "Fecha" }
   ]
 
-export default function ComunionManagement({ formOpen, onCloseForm, selectedComunion, onEdit }: Props) {
+export default function ComunionManagement({ formOpen, onCloseForm, selectedComunion, onEdit, onGenerarCertificado }: Props) {
   const [Comunion, setComunion] = useState<Comunion[]>([])
 
   const fetchData = async () => {
@@ -61,7 +62,7 @@ export default function ComunionManagement({ formOpen, onCloseForm, selectedComu
   return (
     <>
       <ComunionForm open={formOpen} onClose={handleClose} comunion={selectedComunion} />
-      <GenericTable<Comunion> data={Comunion} columns={ComunionColumns} searchableKeys={["nombres", "apellidos", "fecha"]as (keyof Comunion)[]} customRender={{fecha: (value) => formatFechaBonita(value)}} onEdit={onEdit} onDelete={handleDelete} />
+      <TableSacraments<Comunion> data={Comunion} columns={ComunionColumns} searchableKeys={["nombres", "apellidos", "fecha"]as (keyof Comunion)[]} customRender={{fecha: (value) => formatFechaBonita(value)}} onEdit={onEdit} onDelete={handleDelete} onGenerarCertificado={onGenerarCertificado} />
     </>
   )
 }

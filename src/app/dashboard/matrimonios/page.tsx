@@ -6,9 +6,11 @@ import { Button } from "@/components/ui/button"
 import { Plus } from "lucide-react"
 import { Matrimonio } from "@/services/matrimonio"
 import MatrimonioManagement from "@/components/matrimonio/matrimonio-management"
+import GenerarCertificadoGlobal from "@/components/certificates/global-certificate"
 
 export default function MatrimoniosPage() {
   const [formOpen, setFormOpen] = useState(false)
+  const [showModal, setShowModal] = useState(false)
   const [selectedMatrimonio, setSelectedMatrimonio] = useState<Matrimonio | undefined>()
 
   const handleCreate = () => {
@@ -20,6 +22,10 @@ export default function MatrimoniosPage() {
     setSelectedMatrimonio(matrimonio)
     setFormOpen(true)
   }
+
+  const handleCertificate = () => {
+      setShowModal(true)
+    }
 
   return (
     <RoleProtectedRoute allowedRoles={["Administrador"]}>
@@ -40,7 +46,14 @@ export default function MatrimoniosPage() {
           }}
           selectedMatrimonio={selectedMatrimonio}
           onEdit={handleEdit}
+          onGenerarCertificado={handleCertificate}
         />
+
+        <GenerarCertificadoGlobal
+                                    titulo="de Matrimonio"
+                                    open={showModal}
+                                    onOpenChange={setShowModal}
+                                  />
       </div>
     </RoleProtectedRoute>
   )

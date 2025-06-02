@@ -6,9 +6,11 @@ import { Button } from "@/components/ui/button"
 import { Plus } from "lucide-react"
 import { Confirmacion } from "@/services/confirmacion"
 import ConfirmacionManagement from "@/components/confirmacion/confirmacion-management"
+import GenerarCertificadoGlobal from "@/components/certificates/global-certificate"
 
 export default function ConfirmacionPage() {
   const [formOpen, setFormOpen] = useState(false)
+  const [showModal, setShowModal] = useState(false)
   const [selectedConfirmacion, setSelectedConfirmacion] = useState<Confirmacion | undefined>()
 
   const handleCreate = () => {
@@ -20,6 +22,10 @@ export default function ConfirmacionPage() {
     setSelectedConfirmacion(confirmacion)
     setFormOpen(true)
   }
+
+   const handleCertificate = () => {
+      setShowModal(true)
+    }
 
   return (
     <RoleProtectedRoute allowedRoles={["Administrador"]}>
@@ -40,7 +46,14 @@ export default function ConfirmacionPage() {
           }}
           selectedConfirmacion={selectedConfirmacion}
           onEdit={handleEdit}
+          onGenerarCertificado={handleCertificate}
         />
+
+        <GenerarCertificadoGlobal
+                            titulo="de Confirmación"
+                            open={showModal}
+                            onOpenChange={setShowModal}
+                          />
       </div>
     </RoleProtectedRoute>
   )

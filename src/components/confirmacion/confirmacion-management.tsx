@@ -1,14 +1,15 @@
 import { toast } from "sonner"
 import { useEffect, useState } from "react"
-import GenericTable, { Column } from "../shared/generic-table"
 import { Confirmacion, deleteConfirmacion, getAllConfirmaciones } from "@/services/confirmacion"
 import ConfirmacionForm from "./confirmacion-form"
+import TableSacraments, { Column } from "../shared/table-sacraments"
 
 interface Props {
   formOpen: boolean
   onCloseForm: () => void
   selectedConfirmacion?: Confirmacion
   onEdit: (confirmacion: Confirmacion) => void
+  onGenerarCertificado: () => void
 }
 
 const ConfirmacionColumns: Column<Confirmacion>[] = [
@@ -17,7 +18,7 @@ const ConfirmacionColumns: Column<Confirmacion>[] = [
     { key: "fecha", label: "Fecha" }
   ]
 
-export default function ConfirmacionManagement({ formOpen, onCloseForm, selectedConfirmacion, onEdit }: Props) {
+export default function ConfirmacionManagement({ formOpen, onCloseForm, selectedConfirmacion, onEdit, onGenerarCertificado }: Props) {
   const [Confirmacion, setConfirmacion] = useState<Confirmacion[]>([])
 
   const fetchData = async () => {
@@ -61,7 +62,7 @@ export default function ConfirmacionManagement({ formOpen, onCloseForm, selected
   return (
     <>
       <ConfirmacionForm open={formOpen} onClose={handleClose} confirmacion={selectedConfirmacion} />
-      <GenericTable<Confirmacion> data={Confirmacion} columns={ConfirmacionColumns} searchableKeys={["nombres", "apellidos", "fecha"]as (keyof Confirmacion)[]} customRender={{fecha: (value) => formatFechaBonita(value)}} onEdit={onEdit} onDelete={handleDelete} />
+      <TableSacraments<Confirmacion> data={Confirmacion} columns={ConfirmacionColumns} searchableKeys={["nombres", "apellidos", "fecha"]as (keyof Confirmacion)[]} customRender={{fecha: (value) => formatFechaBonita(value)}} onEdit={onEdit} onDelete={handleDelete} onGenerarCertificado={onGenerarCertificado}/>
     </>
   )
 }

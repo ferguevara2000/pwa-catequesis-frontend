@@ -1,14 +1,15 @@
 import { toast } from "sonner"
 import { useEffect, useState } from "react"
-import GenericTable, { Column } from "../shared/generic-table"
 import { Defuncion, deleteDefuncion, getAllDefunciones } from "@/services/defuncion"
 import DefuncionForm from "./defuncion-form"
+import TableSacraments, { Column } from "../shared/table-sacraments"
 
 interface Props {
   formOpen: boolean
   onCloseForm: () => void
   selectedDefuncion?: Defuncion
   onEdit: (defuncion: Defuncion) => void
+  onGenerarCertificado: () => void
 }
 
 const DefuncionColumns: Column<Defuncion>[] = [
@@ -17,7 +18,7 @@ const DefuncionColumns: Column<Defuncion>[] = [
     { key: "fecha_defuncion", label: "Fecha Defunción" }
   ]
 
-export default function DefuncionManagement({ formOpen, onCloseForm, selectedDefuncion, onEdit }: Props) {
+export default function DefuncionManagement({ formOpen, onCloseForm, selectedDefuncion, onEdit, onGenerarCertificado }: Props) {
   const [defuncion, setDefuncion] = useState<Defuncion[]>([])
 
   const fetchData = async () => {
@@ -61,7 +62,7 @@ export default function DefuncionManagement({ formOpen, onCloseForm, selectedDef
   return (
     <>
       <DefuncionForm open={formOpen} onClose={handleClose} defuncion={selectedDefuncion} />
-      <GenericTable<Defuncion> data={defuncion} columns={DefuncionColumns} searchableKeys={["nombres", "apellidos", "fecha_defuncion"]as (keyof Defuncion)[]} customRender={{fecha_defuncion: (value) => formatFechaBonita(value)}} onEdit={onEdit} onDelete={handleDelete} />
+      <TableSacraments<Defuncion> data={defuncion} columns={DefuncionColumns} searchableKeys={["nombres", "apellidos", "fecha_defuncion"]as (keyof Defuncion)[]} customRender={{fecha_defuncion: (value) => formatFechaBonita(value)}} onEdit={onEdit} onDelete={handleDelete} onGenerarCertificado={onGenerarCertificado} />
     </>
   )
 }

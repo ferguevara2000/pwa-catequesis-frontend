@@ -6,9 +6,11 @@ import { Button } from "@/components/ui/button"
 import { Plus } from "lucide-react"
 import { Defuncion } from "@/services/defuncion"
 import DefuncionManagement from "@/components/defuncion/defuncion-management"
+import GenerarCertificadoGlobal from "@/components/certificates/global-certificate"
 
 export default function DefuncionPage() {
   const [formOpen, setFormOpen] = useState(false)
+  const [showModal, setShowModal] = useState(false)
   const [selectedDefuncion, setSelectedDefuncion] = useState<Defuncion | undefined>()
 
   const handleCreate = () => {
@@ -20,6 +22,10 @@ export default function DefuncionPage() {
     setSelectedDefuncion(Defuncion)
     setFormOpen(true)
   }
+
+  const handleCertificate = () => {
+      setShowModal(true)
+    }
 
   return (
     <RoleProtectedRoute allowedRoles={["Administrador"]}>
@@ -40,7 +46,14 @@ export default function DefuncionPage() {
           }}
           selectedDefuncion={selectedDefuncion}
           onEdit={handleEdit}
+          onGenerarCertificado={handleCertificate}
         />
+
+        <GenerarCertificadoGlobal
+                                    titulo="de Defunción"
+                                    open={showModal}
+                                    onOpenChange={setShowModal}
+                                  />
       </div>
     </RoleProtectedRoute>
   )
