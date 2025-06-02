@@ -9,6 +9,7 @@ interface Props {
   onCloseForm: () => void
   selectedMovimiento?: Movimiento
   onEdit: (movimiento: Movimiento) => void
+  onDataReady?: (data: Movimiento[]) => void
 }
 
 const MovimientoColumns: Column<Movimiento>[] = [
@@ -18,7 +19,7 @@ const MovimientoColumns: Column<Movimiento>[] = [
     { key: "fecha", label: "Fecha" }
   ]
 
-export default function MovimientoManagement({ formOpen, onCloseForm, selectedMovimiento, onEdit }: Props) {
+export default function MovimientoManagement({ formOpen, onCloseForm, selectedMovimiento, onEdit, onDataReady }: Props) {
   const [movimiento, setMovimiento] = useState<Movimiento[]>([])
 
   const fetchData = async () => {
@@ -40,6 +41,10 @@ export default function MovimientoManagement({ formOpen, onCloseForm, selectedMo
   useEffect(() => {
     fetchData()
   }, [])
+
+  useEffect(() => {
+    onDataReady?.(movimiento) // tablaDatos es tu array de cursos actuales
+  }, [movimiento, onDataReady])
 
   const handleClose = () => {
     onCloseForm()

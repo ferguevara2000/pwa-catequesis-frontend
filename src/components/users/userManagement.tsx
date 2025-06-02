@@ -9,9 +9,10 @@ interface Props {
   onCloseForm: () => void
   selectedUser?: User
   onEdit: (user: User) => void
+  onDataReady?: (data: User[]) => void
 }
 
-export default function UserManagement({ formOpen, onCloseForm, selectedUser, onEdit }: Props) {
+export default function UserManagement({ formOpen, onCloseForm, selectedUser, onEdit, onDataReady }: Props) {
   const [users, setUsers] = useState<User[]>([])
 
   const fetchUsers = async () => {
@@ -22,6 +23,10 @@ export default function UserManagement({ formOpen, onCloseForm, selectedUser, on
       console.error("Error al cargar usuarios:", error)
     }
   }
+
+  useEffect(() => {
+    onDataReady?.(users) // tablaDatos es tu array de cursos actuales
+  }, [users, onDataReady])
 
   useEffect(() => {
     fetchUsers()

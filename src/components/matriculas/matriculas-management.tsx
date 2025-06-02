@@ -9,6 +9,7 @@ interface Props {
   onCloseForm: () => void
   selectedestudianteCurso?: estudianteCurso
   onEdit: (curso: estudianteCurso) => void
+  onDataReady?: (data: estudianteCurso[]) => void
 }
 
 const cursoColumns: Column<estudianteCurso>[] = [
@@ -17,7 +18,7 @@ const cursoColumns: Column<estudianteCurso>[] = [
     { key: "estado", label: "Estado" },
   ]
 
-export default function MatriculasManagement({ formOpen, onCloseForm, selectedestudianteCurso, onEdit }: Props) {
+export default function MatriculasManagement({ formOpen, onCloseForm, selectedestudianteCurso, onEdit, onDataReady }: Props) {
   const [estudianteCurso, setestudianteCurso] = useState<estudianteCurso[]>([])
 
   const fetchEstudiantesCursos = async () => {
@@ -37,6 +38,10 @@ export default function MatriculasManagement({ formOpen, onCloseForm, selectedes
   useEffect(() => {
     fetchEstudiantesCursos()
   }, [])
+
+  useEffect(() => {
+    onDataReady?.(estudianteCurso) // tablaDatos es tu array de cursos actuales
+  }, [estudianteCurso, onDataReady])
 
   const handleClose = () => {
     onCloseForm()
