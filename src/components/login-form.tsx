@@ -32,7 +32,7 @@ export function LoginForm({
       const response = await login(username, password);
       console.log("Login exitoso:", response);
       localStorage.setItem("user", JSON.stringify(response));
-      setUser({ id: response.id, nombre: response.nombre, apellidos: response.apellidos,usuario: response.usuario, rol: response.rol });
+      setUser({ id: response.id, nombre: response.nombre, apellidos: response.apellidos,usuario: response.usuario, rol: response.rol, barrio_id: response.barrio_id });
       router.push("/dashboard"); // 👈 Redirección al dashboard
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
@@ -118,7 +118,7 @@ export function LoginForm({
 
               <div className="text-center text-sm">
                 ¿Tienes problemas para ingresar? <br />
-                <a href="#" className="underline underline-offset-4">
+                <a href="/contact-admin" className="underline underline-offset-4">
                   Contacta al administrador
                 </a>
               </div>

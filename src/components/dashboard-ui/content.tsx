@@ -1,6 +1,7 @@
 "use client"
 import { useEffect, useState } from "react"
 import AdminPanel from "./admin-panel"
+import TreasurerDashboard from "../movimientos-tesorero/dashboard"
 
 export default function Content() {
   const [role, setRole] = useState<string>("")
@@ -27,12 +28,9 @@ export default function Content() {
     )
   }
 
-  if (role === "Usuario") {
+  if (role === "Tesorero") {
     return (
-      <div>
-        <h2 className="text-xl font-bold text-gray-900 dark:text-white">Dashboard Usuario</h2>
-        <p className="text-gray-600 dark:text-gray-300">Bienvenido a tu panel de usuario.</p>
-      </div>
+      <TreasurerDashboard/>
     )
   }
 

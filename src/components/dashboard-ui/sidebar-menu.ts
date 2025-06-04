@@ -28,7 +28,7 @@ import {
       label: "Dashboard",
       href: "/dashboard",
       icon: Home,
-      roles: ["Catequista", "Estudiante"],
+      roles: ["Catequista", "Estudiante", "Tesorero"],
       section: "General",
     },
     {
@@ -116,11 +116,18 @@ import {
       section: "Finanzas",
     },
     {
+      label: "Movimientos",
+      href: "/dashboard/movimientos-tesorero",
+      icon: BanknoteArrowUp,
+      roles: ["Tesorero"],
+      section: "Finanzas",
+    },
+    {
       label: "Ayuda",
-      href: "/help",
+      href: "/contact-admin",
       icon: HelpCircle,
-      roles: ["Catequista", "Estudiante"],
-      section: "Other",
+      roles: ["Catequista", "Estudiante", "Tesorero"],
+      section: "Otros",
     },
   ]
   

@@ -24,6 +24,16 @@ export async function getAllMovimientos(): Promise<Movimiento[]> {
     return response.json()
   }
 
+  export async function getAllMovimientosByBarrio(barrio_id: string): Promise<Movimiento[]> {
+    const response = await fetch(`${API_URL}/movimientos/barrio/${barrio_id}`)
+  
+    if (!response.ok) {
+      throw new Error("Error al obtener el listado de Movimientos")
+    }
+  
+    return response.json()
+  }
+
   export async function createMovimiento(movimiento: Omit<Movimiento, "id">): Promise<Movimiento> {
     const response = await fetch(`${API_URL}/movimientos`, {
       method: "POST",

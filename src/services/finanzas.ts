@@ -25,8 +25,32 @@ export type Barrio = {
   nombre: string
 }
 
+export type Finanza_Barrio = {
+  total_ingresos: number,
+  total_egresos: number,
+  saldo: number
+  movimientos: Movimientos[]
+}
+
+export type Movimientos = {
+  tipo: string,
+  monto: number,
+  descripcion: string,
+  fecha: string
+}
+
 export async function getAllFinanzas(): Promise<Finanza[]> {
     const response = await fetch(`${API_URL}/finanzas`)
+  
+    if (!response.ok) {
+      throw new Error("Error al obtener el listado de Finanzas")
+    }
+  
+    return response.json()
+  }
+
+export async function getAllFinanzasByBarrio(barrio_id: string): Promise<Finanza_Barrio> {
+    const response = await fetch(`${API_URL}/finanzas/barrio/${barrio_id}`)
   
     if (!response.ok) {
       throw new Error("Error al obtener el listado de Finanzas")
