@@ -154,6 +154,29 @@ export type Estudiante = {
   }
 }
 
+export const recuperarContrasena = async (email: string) => {
+  try {
+    const response = await fetch(`${API_URL}/usuarios/recovery`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email }),
+    })
+
+    const data = await response.json()
+
+    if (!response.ok) {
+      throw new Error(data.message || "Error al recuperar la contraseña")
+    }
+
+    return { success: true, message: data.message }
+  } catch (error) {
+    console.error("❌ Error desde el frontend:", error)
+    return { success: false, message: error }
+  }
+}
+
   
   
   
