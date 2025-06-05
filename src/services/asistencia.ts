@@ -69,3 +69,19 @@ export async function getAsistenciaByIdAndDate(curso_id: string, fecha: string):
     throw error;
   }
 }
+
+export async function getFechasDeAsistenciaPorCurso(cursoId: string): Promise<string[]> {
+  try {
+    const response = await fetch(`${API_URL}/asistencia/fechas/${cursoId}`)
+
+    if (!response.ok) {
+      throw new Error("Error al obtener fechas de asistencia")
+    }
+
+    const fechas: string[] = await response.json()
+    return fechas
+  } catch (error) {
+    console.error("Error al consultar fechas de asistencia:", error)
+    return []
+  }
+}

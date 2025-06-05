@@ -120,19 +120,45 @@ export default function CursoPageClient({
 
           <div>
             <div className="flex items-center justify-between mb-4">
-              <h3 className="font-semibold">Listado de Estudiantes</h3>
-              <Button
-                className="bg-sky-500/75 hover:bg-sky-500/50 text-white cursor-pointer group relative overflow-hidden transition-all duration-300 active:scale-95"
-                onClick={handleClick}
-                disabled={loading}
-              >
-                <span className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></span>
-                <span className="relative flex items-center gap-2">
-                  <ClipboardCheck className="w-4 h-4 transition-transform group-hover:scale-110 duration-300" />
-                  {loading ? "Cargando..." : "Pasar Lista"}
-                </span>
-              </Button>
-            </div>
+  <h3 className="font-semibold">Listado de Estudiantes</h3>
+  <div className="flex gap-3 flex-wrap">
+    <Button
+      className="bg-yellow-600 hover:bg-yellow-700 text-white cursor-pointer group relative overflow-hidden transition-all duration-300 active:scale-95"
+      onClick={() => {
+        // Aquí podrías mostrar un diálogo de confirmación o hacer un llamado al backend para finalizar el curso
+        router.push(`/dashboard/mis-cursos/${id}/finalizar`)
+      }}
+    >
+      <span className="relative flex items-center gap-2">
+        <GraduationCap className="w-4 h-4" />
+        Finalizar Curso
+      </span>
+    </Button>
+    
+    <Button
+      className="bg-green-600 hover:bg-green-700 text-white cursor-pointer group relative overflow-hidden transition-all duration-300 active:scale-95"
+      onClick={() => router.push(`/dashboard/mis-cursos/${id}/registro`)}
+    >
+      <span className="relative flex items-center gap-2">
+        <ClipboardCheck className="w-4 h-4" />
+        Ver Registros
+      </span>
+    </Button>
+
+    <Button
+      className="bg-sky-500/75 hover:bg-sky-500/50 text-white cursor-pointer group relative overflow-hidden transition-all duration-300 active:scale-95"
+      onClick={handleClick}
+      disabled={loading}
+    >
+      <span className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></span>
+      <span className="relative flex items-center gap-2">
+        <ClipboardCheck className="w-4 h-4 transition-transform group-hover:scale-110 duration-300" />
+        {loading ? "Cargando..." : "Pasar Lista"}
+      </span>
+    </Button>
+  </div>
+</div>
+
 
             {estudiantes?.length ? (
               <Table>
