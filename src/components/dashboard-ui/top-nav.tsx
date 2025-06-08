@@ -55,7 +55,7 @@ export default function TopNav() {
         <DropdownMenu>
           <DropdownMenuTrigger className="focus:outline-none">
             <Image
-              src="https://i.imgur.com/QYiF8AV.png"
+              src="https://i.imgur.com/ZF4ZOXb.png"
               alt="User avatar"
               width={28}
               height={28}
@@ -67,7 +67,7 @@ export default function TopNav() {
             sideOffset={8}
             className="w-[280px] sm:w-80 bg-background border-border rounded-lg shadow-lg"
           >
-            <Profile01 avatar="https://i.imgur.com/QYiF8AV.png" />
+            <Profile01 avatar="https://i.imgur.com/ZF4ZOXb.png" />
           </DropdownMenuContent>
         </DropdownMenu>
       </div>

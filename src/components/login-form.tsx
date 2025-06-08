@@ -122,6 +122,14 @@ export function LoginForm({
                   Contacta al administrador
                 </a>
               </div>
+
+              <div className="text-center text-sm">
+                <br />
+                <a href="/home" className="underline underline-offset-4">
+                  ← Ir a la pantalla principal
+                </a>
+              </div>
+
             </div>
           </form>
 

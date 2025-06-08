@@ -6,11 +6,32 @@ export type Comunicacion = {
     mensaje: string,
     dirigido_a: string[],
     fecha: string,
-    enviado_por: string
+    enviado_por: string,
+    categoria?: string
 }
 
 export async function getAllComunicacions(): Promise<Comunicacion[]> {
     const response = await fetch(`${API_URL}/comunicacion`)
+  
+    if (!response.ok) {
+      throw new Error("Error al obtener el listado de Comunicacions")
+    }
+  
+    return response.json()
+  }
+  
+export async function getComunicacionById(id: string): Promise<Comunicacion> {
+    const response = await fetch(`${API_URL}/comunicacion/${id}`)
+  
+    if (!response.ok) {
+      throw new Error("Error al obtener la Comunicacion")
+    }
+  
+    return response.json()
+  }
+
+  export async function getAllComunicacionsForAll(): Promise<Comunicacion[]> {
+    const response = await fetch(`${API_URL}/comunicacion/todos`)
   
     if (!response.ok) {
       throw new Error("Error al obtener el listado de Comunicacions")

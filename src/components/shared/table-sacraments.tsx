@@ -87,7 +87,7 @@ export default function TableSacraments<T extends { id: string | number }>({
         }}
       />
 
-      <div className="border rounded-lg overflow-hidden">
+      <div className="border rounded-lg overflow-x-auto w-full">
         <table className="w-full text-sm">
           <thead className="bg-muted/50 border-b">
             <tr>
