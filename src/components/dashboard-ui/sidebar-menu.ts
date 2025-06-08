@@ -139,7 +139,7 @@ import {
     },
     {
       label: "Ayuda",
-      href: "/contact-admin",
+      href: "/dashboard/contact",
       icon: HelpCircle,
       roles: ["Catequista", "Estudiante", "Tesorero"],
       section: "Otros",

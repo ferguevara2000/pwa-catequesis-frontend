@@ -212,7 +212,7 @@ export default function ContactAdmin() {
 
           <div className="mt-6 text-center">
             <Link
-              href="/login"
+              href="/dashboard"
               className="text-sm text-blue-600 dark:text-blue-400 hover:underline font-medium inline-flex items-center"
             >
               <ArrowLeft className="w-4 h-4 mr-1" />

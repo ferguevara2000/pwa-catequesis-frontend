@@ -41,6 +41,12 @@ export default function Content() {
     )
   }
 
+  if (role === "Estudiante"){
+    return(
+      <AdminPanel userName={username}/>
+    )
+  }
+
   return (
     <div>
       <h2 className="text-xl font-bold text-gray-900 dark:text-white">Dashboard</h2>
