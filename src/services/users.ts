@@ -16,7 +16,8 @@ export type User = {
 
 export type Catequista = {
   id: number
-  nombre: string  
+  nombre: string
+  apellidos?: string  
 }
 
 export type Estudiante = {

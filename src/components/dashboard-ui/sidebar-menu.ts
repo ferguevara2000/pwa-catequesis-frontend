@@ -6,6 +6,7 @@ import {
   CircleDollarSign,
   Cookie,
   Droplet,
+    FileTextIcon,
     HelpCircle,
     Home,
     Mic,
@@ -64,6 +65,20 @@ import {
       href: "/dashboard/mis-cursos",
       icon: School,
       roles: ["Catequista"],
+      section: "General",
+    },
+    {
+      label: "Mis Cursos",
+      href: "/dashboard/cursos-estudiantes",
+      icon: School,
+      roles: ["Estudiante"],
+      section: "General",
+    },
+    {
+      label: "Sacramentos",
+      href: "/dashboard/certificados",
+      icon: FileTextIcon,
+      roles: ["Estudiante"],
       section: "General",
     },
     {

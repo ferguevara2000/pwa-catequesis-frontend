@@ -1,22 +1,25 @@
+import { Curso } from "./cursos";
 import { Estudiante } from "./users";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export type Usuario = {
     id?: number,
-    nombre: string
+    nombre: string,
+    apellidos?: string
 }
 
-export type Curso = {
+export type Cursos = {
     id: number
     nombre: string
+    horario: string
   }
 
 export type estudianteCurso = {
     id: number
     estado: string
     usuario: Usuario
-    curso: Curso
+    curso: Cursos
     usuario_nombre: string
     curso_nombre: string
   }
@@ -32,6 +35,12 @@ export type estudianteCurso = {
     usuario_id: number
     curso_id: number
   }
+
+  export type Matricula = {
+    id: number,
+    estado: string,
+    curso: Curso
+  }
   
   export async function getAllEstudiantesCursos(): Promise<estudianteCurso[]> {
     const response = await fetch(`${API_URL}/estudiantesCurso`)
@@ -45,6 +54,16 @@ export type estudianteCurso = {
 
   export async function getAllEstudiantesByCursoId(id: string): Promise<estudianteCurso[]> {
     const response = await fetch(`${API_URL}/estudiantesCurso/curso/${id}`)
+  
+    if (!response.ok) {
+      throw new Error("Error al obtener los estudiantes")
+    }
+  
+    return response.json()
+  }
+
+  export async function getAllEstudiantesByUsuarioId(id: string): Promise<Matricula> {
+    const response = await fetch(`${API_URL}/estudiantesCurso/estudiante/${id}`)
   
     if (!response.ok) {
       throw new Error("Error al obtener los estudiantes")

@@ -6,6 +6,15 @@ import autoTable from "jspdf-autotable"
 import ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
 
+function formatDate(fecha: string): string {
+  const date = new Date(fecha)
+  return date.toLocaleDateString("es-ES", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  })
+}
+
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
@@ -186,4 +195,69 @@ function getFullBorder() {
     bottom: { style: "thin", color: { argb: "FF000000" } },
     right: { style: "thin", color: { argb: "FF000000" } }
   };
+}
+
+
+// Función para exportar a PDF
+export function exportCertificadoPDF(certificacion: any, nombreGraduado: string) {
+  const doc = new jsPDF({
+    orientation: "landscape",
+    unit: "mm",
+    format: "a4",
+  })
+
+  console.log(certificacion)
+
+  const cursoNombre = certificacion?.matricula_id?.curso_id?.nombre || ""
+  const nivelNombre = certificacion?.matricula_id?.curso_id?.nivel_id?.nombre || ""
+  const porcentajeAsistencia = certificacion?.porcentaje_asistencia || 0
+  const fecha = formatDate(certificacion?.fecha || new Date().toISOString())
+
+  // Fondo opcional
+  doc.setFillColor(240, 240, 240)
+  doc.rect(0, 0, 297, 210, "F")
+
+  // Título del certificado
+  doc.setFontSize(24)
+  doc.setTextColor(40, 40, 40)
+  doc.setFont("helvetica", "bold")
+  doc.text("CERTIFICADO DE FINALIZACIÓN", 148.5, 30, { align: "center" })
+
+  // Nivel (principal título al centro)
+  doc.setFontSize(20)
+  doc.setTextColor(0, 102, 204)
+  doc.text(nivelNombre.toUpperCase(), 148.5, 50, { align: "center" })
+
+  // Texto: El presente certifica que...
+  doc.setFontSize(12)
+  doc.setTextColor(60, 60, 60)
+  doc.setFont("helvetica", "normal")
+  doc.text(`Se otorga el presente certificado a:`, 148.5, 70, { align: "center" })
+
+  // Nombre del graduado
+  doc.setFontSize(18)
+  doc.setFont("times", "bolditalic")
+  doc.setTextColor(0, 0, 0)
+  doc.text(nombreGraduado, 148.5, 82, { align: "center" })
+
+  // Información adicional
+  doc.setFontSize(12)
+  doc.setFont("helvetica", "normal")
+  doc.setTextColor(80, 80, 80)
+  doc.text(`Por su participación en el curso "${cursoNombre}"`, 148.5, 95, { align: "center" })
+  doc.text(`Con un porcentaje de asistencia del ${porcentajeAsistencia}%`, 148.5, 105, { align: "center" })
+  doc.text(`Fecha de emisión: ${fecha}`, 148.5, 115, { align: "center" })
+
+  // Línea de firma
+  doc.line(100, 150, 197, 150)
+  doc.setFontSize(10)
+  doc.text("Firma del Coordinador", 148.5, 158, { align: "center" })
+
+  // Guardar
+  const fileName = `Certificado_${nombreGraduado.replace(/ /g, "_")}.pdf`
+  doc.save(fileName)
+
+  // Devuelve Blob URL
+  const blob = doc.output("blob")
+  return URL.createObjectURL(blob)
 }
