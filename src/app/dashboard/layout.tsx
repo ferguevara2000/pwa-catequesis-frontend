@@ -6,6 +6,7 @@ import TopNav from "@/components/dashboard-ui/top-nav"
 import { useTheme } from "next-themes"
 import { useEffect, useState } from "react"
 import ProtectedRoute from "@/components/ProtectedRoute"
+import { Toaster } from "@/components/ui/sonner"
 
 interface LayoutProps {
   children: ReactNode
@@ -34,6 +35,7 @@ export default function Layout({ children }: LayoutProps) {
           <main className="flex-1 overflow-auto p-6 bg-white dark:bg-[#0F0F12]">{children}</main>
         </div>
       </div>
+      <Toaster richColors position="top-right" /> 
     </ProtectedRoute>
   )
 }

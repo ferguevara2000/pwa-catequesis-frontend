@@ -85,3 +85,19 @@ export async function getFechasDeAsistenciaPorCurso(cursoId: string): Promise<st
     return []
   }
 }
+
+export async function getPorcentajeAsistenciaByUser(cursoId: string): Promise<string[]> {
+  try {
+    const response = await fetch(`${API_URL}/asistencia/resumen/${cursoId}`)
+
+    if (!response.ok) {
+      throw new Error("Error al obtener los porcentajes de asistencia")
+    }
+
+    const fechas: string[] = await response.json()
+    return fechas
+  } catch (error) {
+    console.error("Error al consultar porcentajes:", error)
+    return []
+  }
+}

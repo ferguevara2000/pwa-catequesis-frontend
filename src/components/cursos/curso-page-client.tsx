@@ -53,6 +53,7 @@ export default function CursoPageClient({
   const router = useRouter()
   const [loading, setLoading] = useState(false)
   const [mostrarDialog, setMostrarDialog] = useState(false)
+  const [showDialog, setShowDialog] = useState(false)
   const [fechaActual, setFechaActual] = useState("")
 
   const handleClick = async () => {
@@ -73,6 +74,11 @@ export default function CursoPageClient({
   const handleEditar = () => {
     router.push(`/dashboard/mis-cursos/${id}/asistencia?edit=true&fecha=${fechaActual}`)
     setMostrarDialog(false)
+  }
+
+  const handleConfirmarFinalizar = () => {
+    setShowDialog(false)
+    router.push(`/dashboard/mis-cursos/${id}/finalizar`)
   }
 
   return (
@@ -123,17 +129,14 @@ export default function CursoPageClient({
   <h3 className="font-semibold">Listado de Estudiantes</h3>
   <div className="flex gap-3 flex-wrap">
     <Button
-      className="bg-yellow-600 hover:bg-yellow-700 text-white cursor-pointer group relative overflow-hidden transition-all duration-300 active:scale-95"
-      onClick={() => {
-        // Aquí podrías mostrar un diálogo de confirmación o hacer un llamado al backend para finalizar el curso
-        router.push(`/dashboard/mis-cursos/${id}/finalizar`)
-      }}
-    >
-      <span className="relative flex items-center gap-2">
-        <GraduationCap className="w-4 h-4" />
-        Finalizar Curso
-      </span>
-    </Button>
+        className="bg-yellow-600 hover:bg-yellow-700 text-white cursor-pointer group relative overflow-hidden transition-all duration-300 active:scale-95"
+        onClick={() => setShowDialog(true)}
+      >
+        <span className="relative flex items-center gap-2">
+          <GraduationCap className="w-4 h-4" />
+          Finalizar Curso
+        </span>
+      </Button>
     
     <Button
       className="bg-green-600 hover:bg-green-700 text-white cursor-pointer group relative overflow-hidden transition-all duration-300 active:scale-95"
@@ -210,6 +213,28 @@ export default function CursoPageClient({
               Cancelar
             </Button>
             <Button className="cursor-pointer" onClick={handleEditar}>Editar</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+            {/* Dialog Finalizar Curso*/}
+      <Dialog open={showDialog} onOpenChange={setShowDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Finalizar curso de catequesis</DialogTitle>
+          </DialogHeader>
+          <p className="text-sm text-muted-foreground">
+            Estás a punto de finalizar este curso de catequesis. Esto significa que se evaluará a los estudiantes y se asignarán al siguiente nivel si han cumplido los requisitos.
+            <br /><br />
+            Esta acción es irreversible. ¿Estás seguro de continuar? Se abrira la pagina de finalización.
+          </p>
+          <DialogFooter>
+            <Button className="cursor-pointer" variant="secondary" onClick={() => setShowDialog(false)}>
+              Cancelar
+            </Button>
+            <Button onClick={handleConfirmarFinalizar} className="bg-yellow-600 hover:bg-yellow-700 text-white cursor-pointer">
+              Sí, finalizar curso
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react"
 import AdminPanel from "./admin-panel"
 import TreasurerDashboard from "../movimientos-tesorero/dashboard"
+import CatequistaDashboard from "../dashboard-catequista/catequista"
 
 export default function Content() {
   const [role, setRole] = useState<string>("")
@@ -31,6 +32,12 @@ export default function Content() {
   if (role === "Tesorero") {
     return (
       <TreasurerDashboard/>
+    )
+  }
+
+  if (role === "Catequista"){
+    return (
+      <CatequistaDashboard/>
     )
   }
 
