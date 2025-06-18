@@ -48,9 +48,22 @@ export default function UserManagement({ formOpen, onCloseForm, selectedUser, on
     }
   };
 
+  
+
   return (
     <>
-      <UserForm open={formOpen} onClose={handleClose} user={selectedUser} />
+      <UserForm 
+  open={formOpen} 
+  onClose={handleClose} 
+  user={
+    selectedUser
+      ? {
+          ...selectedUser,
+          barrio_id: selectedUser.barrio_id !== undefined ? String(selectedUser.barrio_id) : undefined,
+        }
+      : undefined
+  } 
+/>
       <UserTable users={users} onEdit={onEdit} onDelete={handleDelete} />
     </>
   )

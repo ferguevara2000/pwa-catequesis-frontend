@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { useParams } from "next/navigation"
-import { getFechasDeAsistenciaPorCurso, getAsistenciaByIdAndDate } from "@/services/asistencia"
+import { getFechasDeAsistenciaPorCurso, getAsistenciaByIdAndDate, Asistencia } from "@/services/asistencia"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
@@ -15,16 +15,6 @@ function formatFechaHumana(fechaIso: string) {
     month: "long",
     year: "numeric",
   }).format(fecha)
-}
-
-interface Asistencia {
-  id: number
-  estado: string
-  estudiante: {
-    usuario: {
-      nombre: string
-    }
-  }
 }
 
 export default function RegistroAsistenciaPage() {
@@ -111,7 +101,7 @@ export default function RegistroAsistenciaPage() {
                 {asistenciaDia.map((a, idx) => (
                   <tr key={a.id} className="border-b border-muted">
                     <td className="py-2">{idx + 1}</td>
-                    <td className="py-2">{a.estudiante.usuario.nombre}</td>
+                    <td className="py-2">{a.estudiante!.usuario.nombre}</td>
                     <td className="py-2">{a.estado}</td>
                   </tr>
                 ))}

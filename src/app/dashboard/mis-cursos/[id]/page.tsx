@@ -4,11 +4,7 @@ import { getAllEstudiantesByCursoId } from "@/services/estudianteCurso"
 import { notFound } from "next/navigation"
 import CursoPageClient from "@/components/cursos/curso-page-client"
 
-interface CursoPageProps {
-  params: { id: string }
-}
-
-export default async function CursoPage({ params }: CursoPageProps) {
+export default async function CursoPage({params}: {params: Promise<{ id: string }>}) {
   const { id } = await params
   const curso = await getCursoById(id)
   if (!curso) return notFound()

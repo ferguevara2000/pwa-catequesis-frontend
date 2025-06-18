@@ -197,7 +197,7 @@ export default function UserProfileForm() {
 
         <div className="space-y-2">
           <Label htmlFor="barrio">Barrio</Label>
-          <Input id="barrio" value={user.barrio.nombre} readOnly />
+          <Input id="barrio" value={user.barrio} readOnly />
         </div>
 
         <div className="space-y-2">

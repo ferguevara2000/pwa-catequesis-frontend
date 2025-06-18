@@ -76,7 +76,7 @@ export default function CatequistaDashboard() {
             <CardTitle className="text-sm font-medium text-muted-foreground">Estudiantes</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold">12</div> {/* Puedes hacerlo dinámico luego */}
+            <div className="text-3xl font-bold">2</div> {/* Puedes hacerlo dinámico luego */}
           </CardContent>
         </Card>
       </div>

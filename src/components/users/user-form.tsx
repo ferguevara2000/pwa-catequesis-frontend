@@ -30,7 +30,7 @@ import UpdatePasswordModal from "./updatePasswordModal";
 import { Barrio, getAllBarrios } from "@/services/finanzas";
 
 type FormData = {
-  id?: string;
+  id?: number;
   nombre: string;
   apellidos: string;
   usuario: string;
@@ -183,7 +183,7 @@ export default function UserForm({
       if (isCreating) {
         await createUser(validated);
       } else {
-        await updateUser(validated, user.id!);
+        await updateUser(validated, user.id!.toString());
         console.log(formData)
       }
       toast.success("Usuario guardado exitosamente");
@@ -360,7 +360,7 @@ export default function UserForm({
           <UpdatePasswordModal
             open={openPasswordModal}
             onClose={() => setOpenPasswordModal(false)}
-            userId={user?.id}
+            userId={user?.id?.toString()}
           />
         </div>
       )}

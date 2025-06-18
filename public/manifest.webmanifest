@@ -1,0 +1,17 @@
+{
+  "name": "Catequesis Montalvo",
+  "short_name": "Catequesis",
+  "description": "Sistema de gestión para catequesis parroquial",
+  "start_url": "/home",
+  "display": "standalone",
+  "orientation": "portrait",
+  "theme_color": "#0a0a23",
+  "background_color": "#ffffff",
+  "icons": [
+    {
+      "src": "/assets/iglesia.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    }
+  ]
+}

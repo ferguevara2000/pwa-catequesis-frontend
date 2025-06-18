@@ -12,56 +12,60 @@ export default function Component() {
       <div className="absolute inset-0 bg-black/50"></div>
 
       {/* Header */}
-      <header className="absolute top-0 w-full py-4 px-6 flex justify-between items-center z-10">
+      <header className="absolute top-0 w-full py-4 px-4 sm:px-6 flex justify-between items-center z-10">
         <div className="flex items-center gap-2">
-          <Church className="h-8 w-8" />
-          <span className="text-xl font-bold">San Miguel de Montalvo</span>
+          <Church className="h-6 w-6 sm:h-8 sm:w-8" />
+          <span className="text-lg sm:text-xl font-bold">San Miguel de Montalvo</span>
         </div>
       </header>
 
       {/* Main Content */}
-      <main className="z-10 text-center px-4 max-w-4xl">
-        <h1 className="text-4xl md:text-6xl font-bold mb-2">Bienvenidos a</h1>
-        <h2 className="text-6xl md:text-8xl font-bold mb-12">Catequesis Parroquial</h2>
-        <p className="text-xl md:text-2xl mb-12 max-w-2xl mx-auto">Parroquia Juan Montalvo</p>
+      <main className="z-10 text-center px-4 max-w-5xl w-full mt-20 mb-10">
+        <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-2">Bienvenidos a</h1>
+        <h2 className="text-4xl sm:text-6xl md:text-7xl font-bold mb-8">Catequesis Parroquial</h2>
+        <p className="text-base sm:text-xl md:text-2xl mb-10 max-w-2xl mx-auto">
+          Parroquia Juan Montalvo
+        </p>
 
         {/* Buttons */}
-        <div className="flex flex-col md:flex-row gap-4 justify-center">
-          <Link href={"/login"}>
+        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+          <Link href="/login" className="w-full sm:w-auto">
             <Button
-                className="bg-white text-blue-900 hover:bg-blue-100 flex items-center gap-2 text-lg px-8 py-6 cursor-pointer"
-                size="lg"
+              className="w-full sm:w-auto bg-white text-blue-900 hover:bg-blue-100 flex items-center justify-center gap-2 text-base sm:text-lg px-6 py-4 sm:px-8 sm:py-6"
+              size="lg"
             >
-                <Users className="h-5 w-5" />
-                <span>Iniciar Sesión</span>
+              <Users className="h-5 w-5" />
+              <span>Iniciar Sesión</span>
             </Button>
           </Link>
 
-          <Link href={"/comunicados"}>
+          <Link href="/comunicados" className="w-full sm:w-auto">
             <Button
-            className="bg-white text-blue-900 hover:bg-blue-100 flex items-center gap-2 text-lg px-8 py-6 cursor-pointer"
-            size="lg"
-          >
-            <Bell className="h-5 w-5" />
-            <span>Comunicados</span>
-          </Button>
+              className="w-full sm:w-auto bg-white text-blue-900 hover:bg-blue-100 flex items-center justify-center gap-2 text-base sm:text-lg px-6 py-4 sm:px-8 sm:py-6"
+              size="lg"
+            >
+              <Bell className="h-5 w-5" />
+              <span>Comunicados</span>
+            </Button>
           </Link>
 
-          <Link href={"/nosotros"}>
+          <Link href="/nosotros" className="w-full sm:w-auto">
             <Button
-            className="bg-white text-blue-900 hover:bg-blue-100 flex items-center gap-2 text-lg px-8 py-6 cursor-pointer"
-            size="lg"
-          >
-            <BookOpen className="h-5 w-5" />
-            <span>Nuestra Historia</span>
-          </Button>
+              className="w-full sm:w-auto bg-white text-blue-900 hover:bg-blue-100 flex items-center justify-center gap-2 text-base sm:text-lg px-6 py-4 sm:px-8 sm:py-6"
+              size="lg"
+            >
+              <BookOpen className="h-5 w-5" />
+              <span>Nuestra Historia</span>
+            </Button>
           </Link>
         </div>
       </main>
 
       {/* Footer */}
-      <footer className="absolute bottom-0 w-full py-4 text-center z-10">
-        <p className="text-sm">© {new Date().getFullYear()} Iglesia San Miguel de Montalvo - Parroquia Juan Montalvo</p>
+      <footer className="absolute bottom-0 w-full py-4 text-center z-10 px-4 text-sm sm:text-base">
+        <p>
+          © {new Date().getFullYear()} Iglesia San Miguel de Montalvo - Parroquia Juan Montalvo
+        </p>
       </footer>
     </div>
   )

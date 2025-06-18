@@ -23,7 +23,7 @@ import { Catequista, getAllCatequistas } from "@/services/users";
 import { ComboBox } from "../shared/combobox";
   
   type CursoFormData = {
-    id?: string;
+    id?: number;
     nombre: string;
     descripcion: string;
     nivel_id: string;
@@ -131,7 +131,7 @@ import { ComboBox } from "../shared/combobox";
         if (isCreating){
             await createCurso(validated)
         }else{
-            await updateCurso(validated, curso.id!)
+            await updateCurso(validated, curso.id!.toString())
         }
   
         // Aquí iría createCurso o updateCurso según el caso
@@ -186,7 +186,7 @@ import { ComboBox } from "../shared/combobox";
                 <Input
                   name={name}
                   type={type}
-                  value={formData[name as keyof CursoFormData]}
+                  value={String(formData[name as keyof CursoFormData] ?? "")}
                   onChange={handleChange}
                   className={clsx(errors[name] && "border-red-500")}
                 />

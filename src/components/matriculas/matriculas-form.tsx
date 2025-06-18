@@ -22,7 +22,7 @@ import { Estudiante } from "@/services/users";
 import { getAllCursos } from "@/services/cursos";
 import {
   createEstudianteCurso,
-  Curso,
+  Cursos,
   getAllEstudiantesNoMatriculados,
   updateEstudianteCurso,
   Usuario,
@@ -32,11 +32,11 @@ import { estudianteCursoSchema, estudianteCursoUpdateSchema } from "@/lib/valida
 import { Input } from "../ui/input";
 
 type MatriculaFormData = {
-  id?: string;
+  id?: number;
   usuario_id: string;
   curso_id: string;
   usuario?: Usuario;
-  curso?: Curso;
+  curso?: Cursos;
   estado: "activo" | "aprobado" | "retirado";
   estudiante_ids?: string[];
 };
@@ -45,7 +45,7 @@ export default function MatriculaForm({ open, onClose, onMatriculaSaved, matricu
   open: boolean;
   onClose: () => void;
   onMatriculaSaved?: () => void;
-  matricula?: Partial<MatriculaFormData & { id: string }>;
+  matricula?: Partial<MatriculaFormData>;
 }) {
   const [formData, setFormData] = useState<MatriculaFormData>({
     usuario_id: "",
@@ -56,7 +56,7 @@ export default function MatriculaForm({ open, onClose, onMatriculaSaved, matricu
 
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [estudiantes, setEstudiantes] = useState<Estudiante[]>([]);
-  const [cursos, setCursos] = useState<Curso[]>([]);
+  const [cursos, setCursos] = useState<Cursos[]>([]);
 
   const isCreating = !matricula;
 

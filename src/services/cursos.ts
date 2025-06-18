@@ -12,8 +12,8 @@ export type Curso = {
     nombre: string
     descripcion?: string
     nivel: Nivel
-    fecha_inicio: Date
-    fecha_fin: Date
+    fecha_inicio: string
+    fecha_fin: string
     horario: string
     nivel_nombre: string
     catequista?: Catequista

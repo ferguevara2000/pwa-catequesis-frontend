@@ -198,7 +198,7 @@ export default function DefuncionForm({
 
               {type === "select" ? (
                 <Select
-                  value={formData[name as keyof DefuncionFormData]}
+                 value={(formData[name as keyof DefuncionFormData] ?? undefined) as string | undefined}
                   onValueChange={(value) =>
                     setFormData((prev) => ({ ...prev, [name]: value }))
                   }

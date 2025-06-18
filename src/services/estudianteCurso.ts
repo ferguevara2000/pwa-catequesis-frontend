@@ -17,7 +17,7 @@ export type Cursos = {
 
 export type estudianteCurso = {
     id: number
-    estado: string
+    estado: "activo" | "aprobado" | "retirado"
     usuario: Usuario
     curso: Cursos
     usuario_nombre: string

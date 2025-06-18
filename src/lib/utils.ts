@@ -3,7 +3,7 @@ import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 import jsPDF from "jspdf"
 import autoTable from "jspdf-autotable"
-import ExcelJS from "exceljs";
+import ExcelJS, { Borders } from "exceljs";
 import { saveAs } from "file-saver";
 
 function formatDate(fecha: string): string {
@@ -13,6 +13,15 @@ function formatDate(fecha: string): string {
     month: "long",
     day: "numeric",
   })
+}
+
+function getFullBorder(): Partial<Borders> {
+  return {
+    top: { style: "thin", color: { argb: "FF000000" } },
+    left: { style: "thin", color: { argb: "FF000000" } },
+    bottom: { style: "thin", color: { argb: "FF000000" } },
+    right: { style: "thin", color: { argb: "FF000000" } }
+  };
 }
 
 export function cn(...inputs: ClassValue[]) {
@@ -186,15 +195,6 @@ export async function exportToExcel(data: any[], columns: { key: string, header:
 
   const buffer = await workbook.xlsx.writeBuffer();
   saveAs(new Blob([buffer]), `${title}.xlsx`);
-}
-
-function getFullBorder() {
-  return {
-    top: { style: "thin", color: { argb: "FF000000" } },
-    left: { style: "thin", color: { argb: "FF000000" } },
-    bottom: { style: "thin", color: { argb: "FF000000" } },
-    right: { style: "thin", color: { argb: "FF000000" } }
-  };
 }
 
 

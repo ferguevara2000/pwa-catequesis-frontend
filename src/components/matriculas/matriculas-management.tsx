@@ -59,6 +59,8 @@ export default function MatriculasManagement({ formOpen, onCloseForm, selectedes
     }
   };
 
+  
+
   return (
     <>
       <MatriculaForm open={formOpen} onClose={handleClose} matricula={selectedestudianteCurso} />

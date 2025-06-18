@@ -1,5 +1,11 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
+export type CertificacionDTO = {
+  id: number,
+  matricula_id: number,
+  porcentaje_asistencia: number
+}
+
 export type Certificacion = {
     id: number,
     matricula_id: Matricula,
@@ -24,7 +30,7 @@ export type Nivel = {
   nombre: string
 }
 
-export async function createCertificacion(bautismo: Omit<Certificacion, "id">): Promise<Certificacion> {
+export async function createCertificacion(bautismo: Omit<CertificacionDTO, "id">): Promise<CertificacionDTO> {
     const response = await fetch(`${API_URL}/certificaciones`, {
       method: "POST",
       headers: {
