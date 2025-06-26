@@ -11,14 +11,14 @@ export const metadata = {
   title: "Sistema de Catequesis",
   description: "Sistema para la gestión de catequesis parroquial",
   // themeColor: '#0a0a23',
-  //manifest: '/manifest.webmanifest',
+  manifest: '/manifest.webmanifest',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="es" suppressHydrationWarning>
       <head>
-      {/* <link rel="manifest" href="/manifest.webmanifest" /> */}
+      <link rel="manifest" href="/manifest.webmanifest" />
       <meta name="theme-color" content="#0a0a23" />
     </head>
       <body className={cn("min-h-screen bg-background font-sans antialiased", inter.className)}>

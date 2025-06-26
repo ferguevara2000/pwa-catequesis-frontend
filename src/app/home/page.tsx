@@ -31,7 +31,7 @@ export default function Component() {
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
           <Link href="/login" className="w-full sm:w-auto">
             <Button
-              className="w-full sm:w-auto bg-white text-blue-900 hover:bg-blue-100 flex items-center justify-center gap-2 text-base sm:text-lg px-6 py-4 sm:px-8 sm:py-6"
+              className="w-full sm:w-auto bg-white text-blue-900 hover:bg-blue-100 flex items-center justify-center gap-2 text-base sm:text-lg px-6 py-4 sm:px-8 sm:py-6 cursor-pointer"
               size="lg"
             >
               <Users className="h-5 w-5" />
@@ -41,7 +41,7 @@ export default function Component() {
 
           <Link href="/comunicados" className="w-full sm:w-auto">
             <Button
-              className="w-full sm:w-auto bg-white text-blue-900 hover:bg-blue-100 flex items-center justify-center gap-2 text-base sm:text-lg px-6 py-4 sm:px-8 sm:py-6"
+              className="w-full sm:w-auto bg-white text-blue-900 hover:bg-blue-100 flex items-center justify-center gap-2 text-base sm:text-lg px-6 py-4 sm:px-8 sm:py-6 cursor-pointer"
               size="lg"
             >
               <Bell className="h-5 w-5" />
@@ -51,7 +51,7 @@ export default function Component() {
 
           <Link href="/nosotros" className="w-full sm:w-auto">
             <Button
-              className="w-full sm:w-auto bg-white text-blue-900 hover:bg-blue-100 flex items-center justify-center gap-2 text-base sm:text-lg px-6 py-4 sm:px-8 sm:py-6"
+              className="w-full sm:w-auto bg-white text-blue-900 hover:bg-blue-100 flex items-center justify-center gap-2 text-base sm:text-lg px-6 py-4 sm:px-8 sm:py-6 cursor-pointer"
               size="lg"
             >
               <BookOpen className="h-5 w-5" />
