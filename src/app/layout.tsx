@@ -4,6 +4,7 @@ import { UserProvider } from "@/context/UserContext";
 import "./globals.css"; // 👈 asegúrate de que exista este archivo y tenga tus estilos tailwind
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner"
+import RegisterSW from "@/components/register-sw";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -22,6 +23,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <meta name="theme-color" content="#0a0a23" />
     </head>
       <body className={cn("min-h-screen bg-background font-sans antialiased", inter.className)}>
+        <RegisterSW />
       <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
         <UserProvider>
           {children}
