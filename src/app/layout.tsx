@@ -5,6 +5,7 @@ import "./globals.css"; // 👈 asegúrate de que exista este archivo y tenga tu
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner"
 import RegisterSW from "@/components/register-sw";
+import PushSuscriber from "@/components/push-suscriber";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -16,6 +17,7 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
+
   return (
     <html lang="es" suppressHydrationWarning>
       <head>
@@ -24,6 +26,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     </head>
       <body className={cn("min-h-screen bg-background font-sans antialiased", inter.className)}>
         <RegisterSW />
+        <PushSuscriber />
       <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
         <UserProvider>
           {children}

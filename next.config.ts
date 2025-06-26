@@ -14,7 +14,10 @@ const withPWANextConfig = withPWA({
   dest: 'public',
   register: true,
   skipWaiting: true,
-  disable: isDev // 👈 importante
+  disable: isDev, // 👈 importante
+  // 👇 Usa tu propio service worker
+  customWorkerDir: 'public',
+  swSrc: 'public/custom-sw.js',
 })(nextConfig)
 
 export default withPWANextConfig

@@ -5,7 +5,7 @@ export default function RegisterSW() {
   useEffect(() => {
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker
-        .register("/sw.js")
+        .register("/custom-sw.js")
         .then((reg) => {
           console.log("✅ Service Worker registrado:", reg)
         })
